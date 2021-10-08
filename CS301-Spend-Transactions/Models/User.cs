@@ -5,7 +5,7 @@ namespace CS301_Spend_Transactions.Models
 {
     public class User
     {
-        public string ID { get; set; }
+        public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhoneNo { get; set; }
