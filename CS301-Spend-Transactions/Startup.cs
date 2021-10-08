@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Pomelo.EntityFrameworkCore.MySql;
 
 namespace CS301_Spend_Transactions
 {
@@ -24,6 +25,8 @@ namespace CS301_Spend_Transactions
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            // TODO: Configure and initialize DB context
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
