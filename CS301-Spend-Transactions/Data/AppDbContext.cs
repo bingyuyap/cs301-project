@@ -245,6 +245,30 @@ namespace CS301_Spend_Transactions
                     // Foreign Key Constraint name 
                     .HasConstraintName("point_reward_fkey");
             });
+            
+            modelBuilder.Entity<Reward>(entity =>
+            {
+                // Defining the primary key and primary key constraint name
+                entity.HasKey(c => c.Id)
+                    .HasName("reward_pkey");
+
+                // Mapping the entity to table
+                entity.ToTable("reward");
+
+                // Stating what properties map to what column name
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Description).HasColumnName("description");
+                entity.Property(e => e.Unit).HasColumnName("unit");
+
+                // This means reward has many points
+                entity.HasMany(r => r.CreditedPoints)
+                    // And a point belongs to a reward
+                    .WithOne(p => p.Reward)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(p => p.Reward)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("reward_point1_fkey");
+            });
 
             base.OnModelCreating(modelBuilder);
             // Customize the ASP.NET Identity model and override the defaults if needed.
