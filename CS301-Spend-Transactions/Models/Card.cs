@@ -10,8 +10,14 @@ namespace CS301_Spend_Transactions.Models
         public string CardPan { get; set; }
         public string CardType { get; set; }
 
-        public User User { get; set; }
-        public ICollection<Rule> Rules { get; set; }
-        public ICollection<Transaction> Transactions { get; set; }
+        public virtual User User { get; set; }
+        
+        public virtual ICollection<Models.Program> Programs { get; set; }
+        
+        public virtual ICollection<Exclusion> Exclusions { get; set; }
+        
+        public virtual ICollection<Campaign> Campaigns { get; set; }
+        
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }
