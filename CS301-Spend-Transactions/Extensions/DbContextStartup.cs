@@ -1,15 +1,32 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using Microsoft.EntityFrameworkCore;
+using MySQL.Data.EntityFrameworkCore.Extensions;
 
 namespace CS301_Spend_Transactions.Extensions
 {
-    public class DbContextStartup
+    public static class DbContextStartup
     {
-        private static string GetConnectionStrings(IWebHostEnvironment env, IConfiguration configuration,
-            IDictionary<string, object> vault)
+        public static void AddDbContextInjections(this IServiceCollection services, IWebHostEnvironment env,
+            IConfiguration configuration)
+        {
+            Console.WriteLine($"Welcome to '{env.EnvironmentName}' environment, your machine" +
+                              $" name is '{Environment.MachineName}'.");
+
+            var dbConnection = GetConnectionStrings(env, configuration);
+            
+            if (string.IsNullOrEmpty(dbConnection))
+                throw new InvalidDataException("Invalid Indexer database connection string");
+            
+            services.AddDbContextPool<AppDbContext>(options => options.UseMySQL(dbConnection));
+        }
+        private static string GetConnectionStrings(IWebHostEnvironment env, IConfiguration configuration)
         {
             if (!env.IsProduction())
                 return configuration.GetConnectionString($"DefaultConnection:{Environment.MachineName}");
