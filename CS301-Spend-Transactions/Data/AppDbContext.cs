@@ -15,6 +15,7 @@ namespace CS301_Spend_Transactions
 
         public DbSet<User> Users { get; set; }
         public DbSet<Card> Cards { get; set; }
+        public DbSet<Rule> Rules { get; set; }
         public DbSet<Exclusion> Exclusions { get; set; }
         public DbSet<Models.Program> Programs { get; set; }
         public DbSet<Campaign> Campaigns { get; set; }
@@ -117,7 +118,7 @@ namespace CS301_Spend_Transactions
             {
                 // Defining the primary key and primary key constraint name
                 entity.HasKey(p => p.Id)
-                    .HasName("program_pkey");
+                    .HasName("programs_pkey");
 
                 // Mapping the entity to table
                 entity.ToTable("programs");
@@ -149,7 +150,7 @@ namespace CS301_Spend_Transactions
             {
                 // Defining the primary key and primary key constraint name
                 entity.HasKey(p => p.Id)
-                    .HasName("campaign_pkey");
+                    .HasName("campaigns_pkey");
 
                 // Mapping the entity to table
                 entity.ToTable("campaigns");
@@ -194,7 +195,7 @@ namespace CS301_Spend_Transactions
             {
                 // Defining the primary key and primary key constraint name
                 entity.HasKey(e => e.MCC)
-                    .HasName("merchant_pkey");
+                    .HasName("merchants_pkey");
 
                 // Mapping the entity to table
                 entity.ToTable("merchants");
@@ -217,10 +218,10 @@ namespace CS301_Spend_Transactions
             {
                 // Defining the primary key and primary key constraint name
                 entity.HasKey(e => e.Id)
-                    .HasName("merchant_pkey");
+                    .HasName("points_pkey");
 
                 // Mapping the entity to table
-                entity.ToTable("merchants");
+                entity.ToTable("points");
 
                 // Stating what properties map to what column name
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -252,10 +253,10 @@ namespace CS301_Spend_Transactions
             {
                 // Defining the primary key and primary key constraint name
                 entity.HasKey(c => c.Id)
-                    .HasName("reward_pkey");
+                    .HasName("rewards_pkey");
 
                 // Mapping the entity to table
-                entity.ToTable("reward");
+                entity.ToTable("rewards");
 
                 // Stating what properties map to what column name
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -269,7 +270,45 @@ namespace CS301_Spend_Transactions
                     // Define the foreign key for this relationship
                     .HasForeignKey(p => p.Reward)
                     // Foreign Key Constraint name 
-                    .HasConstraintName("reward_point1_fkey");
+                    .HasConstraintName("reward_point_fkey");
+            });
+            
+            modelBuilder.Entity<Transaction>(entity =>
+            {
+                // Defining the primary key and primary key constraint name
+                entity.HasKey(c => c.Id)
+                    .HasName("transactions_pkey");
+
+                // Mapping the entity to table
+                entity.ToTable("transactions");
+
+                // Stating what properties map to what column name
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Card).HasColumnName("card");
+                entity.Property(e => e.Merchant).HasColumnName("merchant");
+                entity.Property(e => e.TransactionDate).HasColumnName("transaction_date");
+                entity.Property(e => e.Currency).HasColumnName("currency");
+                entity.Property(e => e.Amount).HasColumnName("amount");
+                
+                
+                // This means transaction belongs to one card
+                entity.HasOne(t => t.Card)
+                    // And a card has many transactions
+                    .WithMany(c => c.Transactions)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(t => t.Card)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("transaction_card_fkey");
+                
+                // // TODO: verify this relationship
+                // // This means transaction belongs to one card
+                // entity.HasOne(t => t.Merchant)
+                //     // And a card has many transactions
+                //     .WithMany(m => m.Transactions)
+                //     // Define the foreign key for this relationship
+                //     .HasForeignKey(t => t.Card)
+                //     // Foreign Key Constraint name 
+                //     .HasConstraintName("transaction_merchant_fkey");
             });
 
             base.OnModelCreating(modelBuilder);
