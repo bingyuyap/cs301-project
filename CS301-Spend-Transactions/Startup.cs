@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CS301_Spend_Transactions.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +32,8 @@ namespace CS301_Spend_Transactions
         public void ConfigureServices(IServiceCollection services)
         {   
             services.AddLogging();
+            
+            services.AddDbContextInjections(WebHostEnvironment, Configuration);
             
             services.AddControllers();
 
