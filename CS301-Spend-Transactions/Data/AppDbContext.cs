@@ -49,6 +49,41 @@ namespace CS301_Spend_Transactions
                     // Foreign Key Constraint name 
                     .HasConstraintName("card_user_fkey");
             });
+            
+            modelBuilder.Entity<Card>(entity =>
+            {
+                // Defining the primary key and primary key constraint name
+                entity.HasKey(c => c.Id)
+                    .HasName("cards_pkey");
+
+                // Mapping the entity to table
+                entity.ToTable("cards");
+
+                // Stating what properties map to what column name
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.CardPan).HasColumnName("card_pan");
+                entity.Property(e => e.CardType).HasColumnName("card_type");
+
+                // This means card has many rules
+                entity.HasMany(c => c.Rules)
+                    // And a rule belongs to a card
+                    .WithOne(r => r.Card)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(r => r.Card)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("rule_card_fkey");
+                
+                // This means card has many transactions
+                entity.HasMany(c => c.Transactions)
+                    // And a transaction belongs to a card
+                    .WithOne(t => t.Card)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(t => t.Card)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("transaction_card_fkey");
+            });
+            
             base.OnModelCreating(modelBuilder);
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.
