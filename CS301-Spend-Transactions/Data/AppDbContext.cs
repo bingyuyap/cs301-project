@@ -147,10 +147,10 @@ namespace CS301_Spend_Transactions
             {
                 // Defining the primary key and primary key constraint name
                 entity.HasKey(p => p.Id)
-                    .HasName("program_pkey");
+                    .HasName("campaign_pkey");
 
                 // Mapping the entity to table
-                entity.ToTable("programs");
+                entity.ToTable("campaigns");
 
                 // Stating what properties map to what column name
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -175,17 +175,40 @@ namespace CS301_Spend_Transactions
                     // Define the foreign key for this relationship
                     .HasForeignKey(r => r.Card)
                     // Foreign Key Constraint name 
-                    .HasConstraintName("program_card_fkey");
+                    .HasConstraintName("campaign_card_fkey");
                 
-                // This means card has many rules1
+                // This means campaign belongs to one merchant
                 entity.HasOne(c => c.Merchant)
-                    // And a rule belongs to a card
+                    // And a merchant has many campaigns
                     // TODO: Check if this is actually possible
                     .WithMany(r => r.Campaigns)
                     // Define the foreign key for this relationship
                     .HasForeignKey(r => r.Card)
                     // Foreign Key Constraint name 
-                    .HasConstraintName("program_card_fkey");
+                    .HasConstraintName("campaign_merchant_fkey");
+            });
+            
+            modelBuilder.Entity<Merchant>(entity =>
+            {
+                // Defining the primary key and primary key constraint name
+                entity.HasKey(e => e.MCC)
+                    .HasName("merchant_pkey");
+
+                // Mapping the entity to table
+                entity.ToTable("merchants");
+
+                // Stating what properties map to what column name
+                entity.Property(e => e.MCC).HasColumnName("mcc");
+                entity.Property(e => e.Name).HasColumnName("name");
+
+                // And a merchant has many campaigns
+                entity.HasMany(e => e.Campaigns)
+                    // This means campaign belongs to one merchant
+                    .WithOne(c => c.Merchant)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(c => c.Id)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("campaign_merchant_fkey");
             });
 
             base.OnModelCreating(modelBuilder);
