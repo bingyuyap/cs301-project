@@ -103,13 +103,46 @@ namespace CS301_Spend_Transactions
                 entity.HasOne(e => e.Card)
                     // And a rule belongs to a card
                     // TODO: Check if this is actually possible
-                    .WithMany(r => (ICollection<Exclusion>)r.Rules)
+                    .WithMany(r => (ICollection<Exclusion>) r.Rules)
                     // Define the foreign key for this relationship
                     .HasForeignKey(r => r.Card)
                     // Foreign Key Constraint name 
-                    .HasConstraintName("rule_card_fkey");
+                    .HasConstraintName("exclusion_card_fkey");
             });
             
+            // Program itself is a reserve key so we need to explicitly define the namespace for this entity
+            modelBuilder.Entity<Models.Program>(entity =>
+            {
+                // Defining the primary key and primary key constraint name
+                entity.HasKey(p => p.Id)
+                    .HasName("program_pkey");
+
+                // Mapping the entity to table
+                entity.ToTable("programs");
+
+                // Stating what properties map to what column name
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.CardType).HasColumnName("card_type");
+                entity.Property(e => e.Card).HasColumnName("card_id");
+                entity.Property(e => e.RewardId).HasColumnName("reward_id");
+                entity.Property(e => e.Multiplier).HasColumnName("multiplier");
+                entity.Property(e => e.MinSpend).HasColumnName("min_spend");
+                entity.Property(e => e.MaxSpend).HasColumnName("max_spend");
+                entity.Property(e => e.ForeignSpend).HasColumnName("foreign_spend");
+                
+                // TODO: Ask Rewards relationship
+                
+                // This means card has many rules1
+                entity.HasOne(e => e.Card)
+                    // And a rule belongs to a card
+                    // TODO: Check if this is actually possible
+                    .WithMany(r => (ICollection<Models.Program>) r.Rules)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(r => r.Card)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("program_card_fkey");
+            });
+
             base.OnModelCreating(modelBuilder);
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.
