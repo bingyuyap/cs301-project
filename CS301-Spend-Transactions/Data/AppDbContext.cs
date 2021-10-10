@@ -83,6 +83,32 @@ namespace CS301_Spend_Transactions
                     // Foreign Key Constraint name 
                     .HasConstraintName("transaction_card_fkey");
             });
+
+            modelBuilder.Entity<Exclusion>(entity =>
+            {
+                // Defining the primary key and primary key constraint name
+                entity.HasKey(e => e.Id)
+                    .HasName("exclusion_pkey");
+
+                // Mapping the entity to table
+                entity.ToTable("exclusions");
+
+                // Stating what properties map to what column name
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.CardType).HasColumnName("card_type");
+                entity.Property(e => e.Card).HasColumnName("card_id");
+                entity.Property(e => e.MCC).HasColumnName("mcc");
+
+                // This means card has many rules
+                entity.HasOne(e => e.Card)
+                    // And a rule belongs to a card
+                    // TODO: Check if this is actually possible
+                    .WithMany(r => (ICollection<Exclusion>)r.Rules)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(r => r.Card)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("rule_card_fkey");
+            });
             
             base.OnModelCreating(modelBuilder);
             // Customize the ASP.NET Identity model and override the defaults if needed.
