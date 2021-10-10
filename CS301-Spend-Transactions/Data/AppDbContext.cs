@@ -183,7 +183,7 @@ namespace CS301_Spend_Transactions
                     // TODO: Check if this is actually possible
                     .WithMany(r => r.Campaigns)
                     // Define the foreign key for this relationship
-                    .HasForeignKey(r => r.Card)
+                    .HasForeignKey(r => r.Merchant)
                     // Foreign Key Constraint name 
                     .HasConstraintName("campaign_merchant_fkey");
             });
@@ -209,6 +209,41 @@ namespace CS301_Spend_Transactions
                     .HasForeignKey(c => c.Id)
                     // Foreign Key Constraint name 
                     .HasConstraintName("campaign_merchant_fkey");
+            });
+            
+            modelBuilder.Entity<Points>(entity =>
+            {
+                // Defining the primary key and primary key constraint name
+                entity.HasKey(e => e.Id)
+                    .HasName("merchant_pkey");
+
+                // Mapping the entity to table
+                entity.ToTable("merchants");
+
+                // Stating what properties map to what column name
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Reward).HasColumnName("reward");
+                entity.Property(e => e.Transaction).HasColumnName("transaction");
+                entity.Property(e => e.Amount).HasColumnName("amount");
+                entity.Property(e => e.ProcessedDate).HasColumnName("processed_date");
+
+                // A point belongs to a transaction
+                entity.HasOne(p => p.Transaction)
+                    // This means campaign belongs to one merchant
+                    .WithMany(t => t.AccumulatedPoints)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(p => p.Transaction)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("point_transaction_fkey");
+                
+                // A point belongs to a particular reward
+                entity.HasOne(p => p.Reward)
+                    // Reward could have many points
+                    .WithMany(r => r.CreditedPoints)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(p => p.Reward)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("point_reward_fkey");
             });
 
             base.OnModelCreating(modelBuilder);
