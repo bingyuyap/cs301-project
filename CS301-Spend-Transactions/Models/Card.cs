@@ -12,12 +12,12 @@ namespace CS301_Spend_Transactions.Models
 
         public virtual User User { get; set; }
         
-        public virtual ICollection<Models.Program> Programs { get; set; }
+        public virtual ICollection<Rule> Rules { get; set; }
         
-        public virtual ICollection<Exclusion> Exclusions { get; set; }
-        
-        public virtual ICollection<Campaign> Campaigns { get; set; }
-        
+        // public virtual ICollection<Exclusion> Exclusions { get; set; }
+        //
+        // public virtual ICollection<Campaign> Campaigns { get; set; }
+        //
         public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

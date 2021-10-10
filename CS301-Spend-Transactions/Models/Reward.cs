@@ -14,8 +14,8 @@ namespace CS301_Spend_Transactions.Models
 
         public ICollection<Points> CreditedPoints { get; set; }
         
-        public ICollection<Program> Programs { get; set; }
+        public ICollection<Rule> Rules { get; set; }
         
-        public ICollection<Campaign> Campaigns { get; set; }
+        // public ICollection<Campaign> Campaigns { get; set; }
     }
 }
