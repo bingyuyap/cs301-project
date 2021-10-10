@@ -10,6 +10,7 @@ namespace CS301_Spend_Transactions.Models
     public abstract class Rule
     {
         public int Id { get; set; }
+        // TODO: Change this to enum?
         public string CardType { get; set; }
 
         public Card Card { get; set; }
