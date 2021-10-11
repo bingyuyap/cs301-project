@@ -42,7 +42,7 @@ namespace CS301_Spend_Transactions.Models
     {
         public int RewardId { get; set; } // references reward table
         // Since this references merchant table I am changing the attribute to Merchant -Bing
-        public Reward Reward { get; set; }
+        public virtual Reward Reward { get; set; }
         
         public string MerchantName { get; set; } // references merchant table
         
@@ -56,7 +56,7 @@ namespace CS301_Spend_Transactions.Models
         
         public decimal MinSpend { get; set; }
         
-        public decimal? MaxSpend { get; set; }
+        public decimal MaxSpend { get; set; }
         
         public bool ForeignSpend { get; set; }
     }
