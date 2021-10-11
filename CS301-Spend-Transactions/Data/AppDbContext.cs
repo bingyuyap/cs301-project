@@ -16,9 +16,6 @@ namespace CS301_Spend_Transactions
         public DbSet<User> Users { get; set; }
         public DbSet<Card> Cards { get; set; }
         public DbSet<Rule> Rules { get; set; }
-        // public DbSet<Rule> Exclusions { get; set; }
-        // public DbSet<Rule> Programs { get; set; }
-        // public DbSet<Rule> Campaigns { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Points> Points { get; set; }
         public DbSet<Reward> Rewards { get; set; }
@@ -76,17 +73,17 @@ namespace CS301_Spend_Transactions
                     // Foreign Key Constraint name 
                     .HasConstraintName("card_user_fkey");
                 
-                // // This means card has many rules
-                // entity.HasMany(c => c.Rules)
-                //     // And a rule belongs to a card
-                //     .WithOne(r => r.Card)
-                //     // Define the foreign key for this relationship
-                //     .HasForeignKey(r => r.CardId)
-                //     // Foreign Key Constraint name 
-                //     .HasConstraintName("rule_card_fkey");
+                // This means card has many rules
+                entity.HasMany(c => (ICollection<Exclusion>) c.Rules)
+                    // And a rule belongs to a card
+                    .WithOne(r => r.Card)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(r => r.CardId)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("rule_card_fkey");
                 
                 // This means card has many rules
-                entity.HasMany(c => c.Transactions)
+                entity.HasMany(c => (ICollection<Campaign>) c.Rules)
                     // And a rule belongs to a card
                     .WithOne(r => r.Card)
                     // Define the foreign key for this relationship
@@ -95,145 +92,139 @@ namespace CS301_Spend_Transactions
                     .HasConstraintName("rule_card_fkey");
                 
                 // // This means card has many rules
-                // entity.HasMany(c => c.Campaigns)
-                //     // And a rule belongs to a card
-                //     .WithOne(r => r.Card)
-                //     // Define the foreign key for this relationship
-                //     .HasForeignKey(r => r.CardId)
-                //     // Foreign Key Constraint name 
-                //     .HasConstraintName("rule_card_fkey");
-                //
-                // // This means card has many transactions
-                // entity.HasMany(c => c.Transactions)
-                //     // And a transaction belongs to a card
-                //     .WithOne(t => t.Card)
-                //     // Define the foreign key for this relationship
-                //     .HasForeignKey(t => t.CardId)
-                //     // Foreign Key Constraint name 
-                //     .HasConstraintName("transaction_card_fkey");
+                entity.HasMany(c => (ICollection<Models.Program>) c.Rules)
+                    // And a rule belongs to a card
+                    .WithOne(r => r.Card)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(r => r.CardId)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("rule_card_fkey");
+                
+                // This means card has many transactions
+                entity.HasMany(c => c.Transactions)
+                    // And a transaction belongs to a card
+                    .WithOne(t => t.Card)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(t => t.CardId)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("transaction_card_fkey");
             });
 
-            // modelBuilder.Entity<Exclusion>(entity =>
-            // {
-            //     // Defining the primary key and primary key constraint name
-            //     entity.HasKey(e => e.Id)
-            //         .HasName("exclusion_pkey");
-            //
-            //     // Mapping the entity to table
-            //     entity.ToTable("exclusions");
-            //
-            //     // Stating what properties map to what column name
-            //     entity.Property(e => e.Id).HasColumnName("id");
-            //     entity.Property(e => e.CardType).HasColumnName("card_type");
-            //     // entity.Property(e => e.Card).HasColumnName("card");
-            //     entity.Property(e => e.MCC).HasColumnName("mcc");
-            //
-            //     // This means card has many rules
-            //     entity.HasOne(e => e.Card)
-            //         // And a rule belongs to a card
-            //         // TODO: Check if this is actually possible
-            //         .WithMany(r => (ICollection<Exclusion>) r.Rules)
-            //         // Define the foreign key for this relationship
-            //         .HasForeignKey(r => r.CardId)
-            //         // Foreign Key Constraint name 
-            //         .HasConstraintName("exclusion_card_fkey");
-            // });
+            modelBuilder.Entity<Rule>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .HasName("rules_pkey");
+                
+                entity.ToTable("rules");
+                
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.CardType).HasColumnName("card_type");
+                
+                // This means card has many rules
+                entity.HasOne(r => r.Card)
+                    // And a rule belongs to a card
+                    .WithMany(c => c.Rules)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(r => r.CardId)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("rule_card_fkey");
+            });
+
+            modelBuilder.Entity<Exclusion>(entity =>
+            {
+                entity.Property(e => e.MCC).HasColumnName("mcc");
             
-            // // Program itself is a reserve key so we need to explicitly define the namespace for this entity
-            // modelBuilder.Entity<Models.Program>(entity =>
-            // {
-            //     // Defining the primary key and primary key constraint name
-            //     entity.HasKey(p => p.Id)
-            //         .HasName("programs_pkey");
+                // This means card has many rules
+                entity.HasOne(e => e.Card)
+                    // And a rule belongs to a card
+                    // TODO: Check if this is actually possible
+                    .WithMany(r => (ICollection<Exclusion>) r.Rules)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(r => r.CardId)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("exclusion_card_fkey");
+            });
+            
+            // Program itself is a reserve key so we need to explicitly define the namespace for this entity
+            modelBuilder.Entity<Models.Program>(entity =>
+            {
+                entity.Property(e => e.Multiplier).HasColumnName("multiplier");
+                entity.Property(e => e.MinSpend).HasColumnName("min_spend");
+                entity.Property(e => e.MaxSpend).HasColumnName("max_spend");
+                entity.Property(e => e.ForeignSpend).HasColumnName("foreign_spend");
+                
+                // TODO: Ask Rewards relationship
+                
+                // This means card has many rules
+                entity.HasOne(e => e.Card)
+                    // And a rule belongs to a card
+                    // TODO: Check if this is actually possible
+                    .WithMany(r => (ICollection<Models.Program>) r.Rules)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(r => r.CardId)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("program_card_fkey");
+                //
+                entity.HasOne(e => e.Reward)
+                    // And a rule belongs to a card
+                    // TODO: Check if this is actually possible
+                    .WithMany(r => (ICollection<Models.Program>) r.Rules)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(e => e.RewardId)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("program_reward_fkey");
+            });
             //
-            //     // Mapping the entity to table
-            //     entity.ToTable("programs");
-            //
-            //     // Stating what properties map to what column name
-            //     entity.Property(e => e.Id).HasColumnName("id");
-            //     entity.Property(e => e.CardType).HasColumnName("card_type");
-            //     // entity.Property(e => e.Card).HasColumnName("card");
-            //     // entity.Property(e => e.Reward).HasColumnName("reward");
-            //     entity.Property(e => e.Multiplier).HasColumnName("multiplier");
-            //     entity.Property(e => e.MinSpend).HasColumnName("min_spend");
-            //     entity.Property(e => e.MaxSpend).HasColumnName("max_spend");
-            //     entity.Property(e => e.ForeignSpend).HasColumnName("foreign_spend");
-            //     
-            //     // TODO: Ask Rewards relationship
-            //     
-            //     // This means card has many rules
-            //     entity.HasOne(e => e.Card)
-            //         // And a rule belongs to a card
-            //         // TODO: Check if this is actually possible
-            //         .WithMany(r => (ICollection<Models.Program>) r.Rules)
-            //         // Define the foreign key for this relationship
-            //         .HasForeignKey(r => r.CardId)
-            //         // Foreign Key Constraint name 
-            //         .HasConstraintName("program_card_fkey");
-            //     
-            //     entity.HasOne(e => e.Reward)
-            //         // And a rule belongs to a card
-            //         // TODO: Check if this is actually possible
-            //         .WithMany(r => r.Programs)
-            //         // Define the foreign key for this relationship
-            //         .HasForeignKey(e => e.RewardId)
-            //         // Foreign Key Constraint name 
-            //         .HasConstraintName("program_reward_fkey");
-            // });
-            //
-            // modelBuilder.Entity<Campaign>(entity =>
-            // {
-            //     // Defining the primary key and primary key constraint name
-            //     entity.HasKey(p => p.Id)
-            //         .HasName("campaigns_pkey");
-            //
-            //     // Mapping the entity to table
-            //     entity.ToTable("campaigns");
-            //
-            //     // Stating what properties map to what column name
-            //     entity.Property(e => e.Id).HasColumnName("id");
-            //     entity.Property(e => e.CardType).HasColumnName("card_type");
-            //     // entity.Property(e => e.Card).HasColumnName("card");
-            //     // entity.Property(e => e.Reward).HasColumnName("reward");
-            //     // entity.Property(e => e.Merchant).HasColumnName("merchant");
-            //     entity.Property(e => e.Description).HasColumnName("description");
-            //     entity.Property(e => e.StartDate).HasColumnName("start_date");
-            //     entity.Property(e => e.EndDate).HasColumnName("end_date");
-            //     entity.Property(e => e.MinSpend).HasColumnName("min_spend");
-            //     entity.Property(e => e.MaxSpend).HasColumnName("max_spend");
-            //     entity.Property(e => e.ForeignSpend).HasColumnName("foreign_spend");
-            //     
-            //     // TODO: Ask Rewards relationship
-            //     
-            //     // This means card has many rules
-            //     entity.HasOne(e => e.Card)
-            //         // And a rule belongs to a card
-            //         // TODO: Check if this is actually possible
-            //         .WithMany(r => (ICollection<Campaign>) r.Rules)
-            //         // Define the foreign key for this relationship
-            //         .HasForeignKey(r => r.CardId)
-            //         // Foreign Key Constraint name 
-            //         .HasConstraintName("campaign_card_fkey");
-            //     
-            //     // This means campaign belongs to one merchant
-            //     entity.HasOne(c => c.Merchant)
-            //         // And a merchant has many campaigns
-            //         // TODO: Check if this is actually possible
-            //         .WithMany(r => r.Campaigns)
-            //         // Define the foreign key for this relationship
-            //         .HasForeignKey(r => r.MerchantName)
-            //         // Foreign Key Constraint name 
-            //         .HasConstraintName("campaign_merchant_fkey");
-            //     
-            //     entity.HasOne(e => e.Reward)
-            //         // And a rule belongs to a card
-            //         // TODO: Check if this is actually possible
-            //         .WithMany(r => r.Campaigns)
-            //         // Define the foreign key for this relationship
-            //         .HasForeignKey(e => e.RewardId)
-            //         // Foreign Key Constraint name 
-            //         .HasConstraintName("program_reward_fkey");
-            // });
+            modelBuilder.Entity<Campaign>(entity =>
+            {
+                // Stating what properties map to what column name
+                entity.Property(e => e.Description).HasColumnName("description");
+                entity.Property(e => e.StartDate).HasColumnName("start_date");
+                entity.Property(e => e.EndDate).HasColumnName("end_date");
+                entity.Property(e => e.MinSpend).HasColumnName("min_spend");
+                entity.Property(e => e.MaxSpend).HasColumnName("max_spend");
+                entity.Property(e => e.ForeignSpend).HasColumnName("foreign_spend");
+                
+                // TODO: Ask Rewards relationship
+                
+                // This means card has many rules
+                entity.HasOne(e => e.Card)
+                    // And a rule belongs to a card
+                    // TODO: Check if this is actually possible
+                    .WithMany(r => (ICollection<Campaign>) r.Rules)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(r => r.CardId)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("campaign_card_fkey");
+                
+                // This means campaign belongs to one merchant
+                entity.HasOne(c => c.Merchant)
+                    // And a merchant has many campaigns
+                    // TODO: Check if this is actually possible
+                    .WithMany(r => r.Campaigns)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(r => r.MerchantName)
+                    // Foreign Key Constraint name 
+                .HasConstraintName("campaign_merchant_fkey");
+                //
+                entity.HasOne(e => e.Reward)
+                    // And a rule belongs to a card
+                    // TODO: Check if this is actually possible
+                    .WithMany(r => (ICollection<Campaign>) r.Rules)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(e => e.RewardId)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("campaign_reward_fkey");
+            });
+            
+            modelBuilder.Entity<Models.Program>()
+                .Property(b => b.RewardId)
+                .HasColumnName("RewardId");
+
+            modelBuilder.Entity<Campaign>()
+                .Property(b => b.RewardId)
+                .HasColumnName("RewardId");
+            
             //
             modelBuilder.Entity<Merchant>(entity =>
             {
@@ -314,21 +305,20 @@ namespace CS301_Spend_Transactions
                     // Foreign Key Constraint name 
                     .HasConstraintName("reward_point_fkey");
                 
-                // entity.HasMany(r => r.Programs)
-                //     // And a point belongs to a reward
-                //     .WithOne(p => p.Reward)
-                //     // Define the foreign key for this relationship
-                //     .HasForeignKey(p => p.RewardId)
-                //     // Foreign Key Constraint name 
-                //     .HasConstraintName("reward_program_fkey");
-                //
-                // entity.HasMany(r => r.Campaigns)
-                //     // And a point belongs to a reward
-                //     .WithOne(p => p.Reward)
-                //     // Define the foreign key for this relationship
-                //     .HasForeignKey(p => p.RewardId)
-                //     // Foreign Key Constraint name 
-                //     .HasConstraintName("reward_campaign_fkey");
+                entity.HasMany(r => (ICollection<Models.Program>) r.Rules)
+                    // And a point belongs to a reward
+                    .WithOne(p => p.Reward)
+                    .HasForeignKey(p => p.RewardId)
+                    .HasConstraintName("reward_program_fkey");
+
+
+                    entity.HasMany(r => (ICollection<Campaign>) r.Rules)
+                    // And a point belongs to a reward
+                    .WithOne(p => p.Reward)
+                    // Define the foreign key for this relationship
+                    .HasForeignKey(p => p.RewardId)
+                    // Foreign Key Constraint name 
+                    .HasConstraintName("reward_campaign_fkey");
             });
             
             modelBuilder.Entity<Transaction>(entity =>
