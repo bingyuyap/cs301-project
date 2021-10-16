@@ -1,4 +1,5 @@
 using System.Data;
+using System.Linq;
 using CS301_Spend_Transactions.Models;
 using CS301_Spend_Transactions.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,11 @@ namespace CS301_Spend_Transactions.Services
         
         public User GetUserById(string Id)
         {
-            throw new System.NotImplementedException();
+            using var scope = _scopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            // Using LINQ expressions here
+            return dbContext.Users.First(user => user.Id == Id);
         }
 
         public User AddUser(User user)
