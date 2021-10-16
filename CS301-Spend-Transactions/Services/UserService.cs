@@ -28,9 +28,11 @@ namespace CS301_Spend_Transactions.Services
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            
-            
-            throw new System.NotImplementedException();
+
+            dbContext.Add(user);
+            dbContext.SaveChanges();
+
+            return user;
         }
     }
 
