@@ -21,7 +21,7 @@ namespace CS301_Spend_Transactions.Extensions
             var dbConnection = GetConnectionStrings(env, configuration);
             
             if (string.IsNullOrEmpty(dbConnection))
-                throw new InvalidDataException("Invalid Indexer database connection string");
+                throw new InvalidDataException("Invalid database connection string");
             
             services.AddDbContextPool<AppDbContext>(options => options.UseMySQL(dbConnection));
         }
