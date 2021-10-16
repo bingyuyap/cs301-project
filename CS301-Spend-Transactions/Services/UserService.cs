@@ -9,6 +9,7 @@ namespace CS301_Spend_Transactions.Services
     public class UserService : IUserService
     {
         private readonly ILogger<UserService> _logger;
+        // Manages the lifetime of the services we going to inject
         private readonly IServiceScopeFactory _scopeFactory;
 
         public UserService(IServiceScopeFactory scopeFactory,
@@ -25,6 +26,10 @@ namespace CS301_Spend_Transactions.Services
 
         public User addUser(User user)
         {
+            using var scope = _scopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            
+            
             throw new System.NotImplementedException();
         }
     }
