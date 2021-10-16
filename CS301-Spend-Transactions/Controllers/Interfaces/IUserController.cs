@@ -5,7 +5,7 @@ namespace CS301_Spend_Transactions.Controllers.Interfaces
 {
     public interface IUserController
     {
-        IActionResult AddUser(User user);
+        User AddUser(User user);
 
         IActionResult GetUsetById(string Id);
     }

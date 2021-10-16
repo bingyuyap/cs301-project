@@ -4,8 +4,8 @@ namespace CS301_Spend_Transactions.Services.Interfaces
 {
     public interface IUserService
     {
-        User getUserById(string Id);
+        User GetUserById(string Id);
 
-        User addUser(User user);
+        User AddUser(User user);
     }
 }

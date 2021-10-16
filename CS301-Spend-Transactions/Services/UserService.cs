@@ -19,12 +19,12 @@ namespace CS301_Spend_Transactions.Services
             _logger = logger;
         }
         
-        public User getUserById(string Id)
+        public User GetUserById(string Id)
         {
             throw new System.NotImplementedException();
         }
 
-        public User addUser(User user)
+        public User AddUser(User user)
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
