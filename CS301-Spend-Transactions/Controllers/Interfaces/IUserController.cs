@@ -7,6 +7,6 @@ namespace CS301_Spend_Transactions.Controllers.Interfaces
     {
         User AddUser(User user);
 
-        IActionResult GetUsetById(string Id);
+        User GetUsetById(string Id);
     }
 }

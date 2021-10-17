@@ -22,10 +22,12 @@ namespace CS301_Spend_Transactions.Controllers
         {
             return _userService.AddUser(user);
         }
+        
+        [HttpGet("/api/User/GetUser")]
 
-        public IActionResult GetUsetById(string Id)
+        public User GetUsetById(string Id)
         {
-            throw new System.NotImplementedException();
+            return _userService.GetUserById(Id);
         }
     }
 }
