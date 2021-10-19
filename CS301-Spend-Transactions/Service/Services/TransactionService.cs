@@ -1,4 +1,5 @@
-using System.Transactions;
+using System.Linq;
+using CS301_Spend_Transactions.Models;
 using CS301_Spend_Transactions.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -30,7 +31,11 @@ namespace CS301_Spend_Transactions.Services
 
         public Transaction GetTransactionById(string Id)
         {
-            throw new System.NotImplementedException();
+            using var scope = _scopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            // Using LINQ expressions here
+            return dbContext.Transactions.First(transaction => transaction.Id == Id);
         }
     }
 }
