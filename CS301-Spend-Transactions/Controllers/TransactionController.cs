@@ -1,6 +1,8 @@
-using System.Transactions;
+using CS301_Spend_Transactions.Models;
+
 using CS301_Spend_Transactions.Controllers.Interfaces;
 using CS301_Spend_Transactions.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace CS301_Spend_Transactions.Controllers
@@ -9,21 +11,24 @@ namespace CS301_Spend_Transactions.Controllers
     {
         private readonly ILogger<TransactionController> _logger;
         private ITransactionService _transactionService;
-
+a
         public TransactionController(ILogger<TransactionController> logger, 
             ITransactionService transactionService) : base(logger)
         {
             _logger = logger;
             _transactionService = transactionService;
         }
+        
+        [HttpPost("/api/Transaction/AddTransaction")]
         public Transaction AddTransaction(Transaction transaction)
         {
-            throw new System.NotImplementedException();
+            return _transactionService.AddTransaction(transaction);
         }
 
+        [HttpGet("/api/Transaction/GetTransaction")]
         public Transaction GetTransactionById(string Id)
         {
-            throw new System.NotImplementedException();
+            return _transactionService.GetTransactionById(Id);
         }
 
         
