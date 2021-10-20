@@ -24,4 +24,9 @@
     <Folder Include="Service" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Repo\Helpers\Seeds\dummyUsers.csv" />
+    <None Include="Repo\Helpers\Seeds\DummyUsers.csv" />
+  </ItemGroup>
+
 </Project>
