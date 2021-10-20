@@ -24,7 +24,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             _logger = logger;
         }
 
-        public void SeedUserEntries()
+        public async Task<int> SeedUserEntries()
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -40,8 +40,8 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                         System.Globalization.CultureInfo.CreateSpecificCulture("enUS"));
                     var users = csvReader.GetRecords<User>();
                     
-                    dbContext.Users.AddRange(users);
-                    dbContext.SaveChanges();
+                    dbContext.Users.AddRangeAsync(users);
+                    return await dbContext.SaveChangesAsync();
                 }
             }
         }
