@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <Folder Include="Domain" />
-    <Folder Include="Repository" />
+    <Folder Include="Repo" />
     <Folder Include="Service" />
   </ItemGroup>
 
