@@ -7,6 +7,8 @@ namespace CS301_Spend_Transactions.Controllers.Interfaces
     {
         User AddUser(User user);
 
-        User GetUsetById(string Id);
+        User GetUserById(string Id);
+        
+        void SeedUsers();
     }
 }
