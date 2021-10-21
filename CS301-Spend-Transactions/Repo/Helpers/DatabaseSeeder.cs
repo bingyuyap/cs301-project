@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -74,11 +75,24 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/DummyTransactions.csv"))
             {
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
-                var transactions = csvReader.GetRecords<Transaction>();
-                
-                dbContext.Transactions.AddRange(transactions);
-                return await dbContext.SaveChangesAsync();
+                csvReader.Read();
+                csvReader.ReadHeader();
+                while (csvReader.Read())
+                {
+                    var record = new Transaction
+                    {
+                        Id = csvReader.GetField("Id"),
+                        CardId = csvReader.GetField("CardId"),
+                        MerchantName = csvReader.GetField("MerchantName"),
+                        TransactionDate = csvReader.GetField<DateTime>("TransactionDate"),
+                        Currency = csvReader.GetField("Currency"),
+                        Amount = csvReader.GetField<decimal>("Amount")
+                    };
+                    dbContext.Transactions.Add(record);
+                }
             }
+            
+            return await dbContext.SaveChangesAsync();
         }
     }
 }
