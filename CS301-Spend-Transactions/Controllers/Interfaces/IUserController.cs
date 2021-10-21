@@ -9,6 +9,6 @@ namespace CS301_Spend_Transactions.Controllers.Interfaces
 
         User GetUserById(string Id);
         
-        void SeedUsers();
+        
     }
 }
