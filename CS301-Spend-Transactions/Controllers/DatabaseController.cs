@@ -22,9 +22,10 @@ namespace CS301_Spend_Transactions.Controllers
             await _databaseSeeder.SeedUserEntries();
         }
 
-        public void SeedCards()
+        [HttpGet("/api/Database/SeedCards")]
+        public async void SeedCards()
         {
-            throw new System.NotImplementedException();
+            await _databaseSeeder.SeedCardEntries();
         }
 
         public void SeedTransactions()
