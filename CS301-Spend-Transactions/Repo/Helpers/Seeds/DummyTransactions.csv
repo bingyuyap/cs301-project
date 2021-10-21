@@ -1,4 +1,4 @@
-"UserId","TransactionId","Merchant","Mcc","Currency","Amount","TransactionDate","CardId","CardPan","CardType"
+"UserId","Id","MerchantName","Mcc","Currency","Amount","TransactionDate","CardId","CardPan","CardType"
 "c00082bc-a496-4a48-97c0-06dfdd42e2d3","7ab30d850d7f5509765a577f5e1b64353fcfb5d05a9efd0ffb82c1f5af27e610","Bergstrom and Sons","2213","USD",9.99,"2021-09-03","17cc3eca-c920-4e83-83fd-e1bb9f89ca75","4574-1442-4975-2084","scis_shopping"
 "cf016b27-3f1f-4836-9f40-f44dc7fb4cd9","e3d5aa85c2d508986c04347e1d435826c86b8907ba4e03fb7b56b38982c4ca8a","Nikolaus LLC","7110","SGD",152.33,"2021-09-03","23432c85-bcca-486e-89d5-86371397d83a","4690-1401-0548-6055","scis_freedom"
 "e7854677-519c-48f6-8a1f-992aa6d0d27b","0e936557c9d9bb800f66d812780ee1551aca300242d512907f07f51cad55b71f","Schultz","4245","SGD",728.98,"2021-09-03","5852b055-219e-408e-bf0c-d119da170d49","6771-8988-8239-7574","scis_platinummiles"
