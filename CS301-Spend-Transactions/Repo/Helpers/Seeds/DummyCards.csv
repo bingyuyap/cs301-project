@@ -1,4 +1,4 @@
-"Id","FirstName","LastName","PhoneNo","Email","CreatedAt","UpdatedAt","CardId","CardPan","CardType"
+"UserId","FirstName","LastName","PhoneNo","Email","CreatedAt","UpdatedAt","Id","CardPan","CardType"
 "b044eeea-5818-461b-a005-372b0ee53647","Dorthea","Ebert","+6591242643","emmaneugene@gmail.com","2021-08-23 06:51:25.039063","2021-08-23 06:51:25.039063","17cc3eca-c920-4e83-83fd-e1bb9f89ca75","4574-1442-4975-2084","scis_shopping"
 "b044eeea-5818-461b-a005-372b0ee53647","Dorthea","Ebert","+6591242643","emmaneugene@gmail.com","2021-08-23 06:51:25.039063","2021-08-23 06:51:25.039063","23432c85-bcca-486e-89d5-86371397d83a","4690-1401-0548-6055","scis_freedom"
 "07661502-f08a-4391-a274-d8d8b9bdfc54","Hisako","Schowalter","+6596180081","claire.xw205@gmail.com","2021-08-23 06:51:25.756425","2021-08-23 06:51:25.756425","5852b055-219e-408e-bf0c-d119da170d49","6771-8988-8239-7574","scis_platinummiles"
