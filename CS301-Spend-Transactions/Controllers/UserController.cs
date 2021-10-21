@@ -36,11 +36,5 @@ namespace CS301_Spend_Transactions.Controllers
         {
             return _userService.GetUserById(Id);
         }
-
-        [HttpGet("/api/User/Seed")]
-        public async void SeedUsers()
-        {
-            var res = await _databaseSeeder.SeedUserEntries();
-        }
     }
 }
