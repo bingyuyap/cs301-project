@@ -7,5 +7,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers.Interfaces
         Task<int> SeedUserEntries();
 
         Task<int> SeedCardEntries();
+        
+        Task<int> SeedTransactionEntries();
     }
 }
