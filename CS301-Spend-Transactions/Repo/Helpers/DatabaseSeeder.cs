@@ -37,5 +37,20 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                 return await dbContext.SaveChangesAsync();
             }
         }
+        
+        public async Task<int> SeedCardEntries()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            
+            using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/DummyCards.csv"))
+            {
+                CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
+                var cards = csvReader.GetRecords<Card>();
+                
+                dbContext.Cards.AddRange(cards);
+                return await dbContext.SaveChangesAsync();
+            }
+        }
     }
 }
