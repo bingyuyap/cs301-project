@@ -6,6 +6,8 @@ using CS301_Spend_Transactions.Models;
 using CS301_Spend_Transactions.Repo.Helpers.Interfaces;
 using CS301_Spend_Transactions.Services;
 using CsvHelper;
+using CsvHelper.Configuration;
+using Google.Protobuf.Collections;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -42,15 +44,26 @@ namespace CS301_Spend_Transactions.Repo.Helpers
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            
+
             using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/DummyCards.csv"))
             {
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
-                var cards = csvReader.GetRecords<Card>();
-                
-                dbContext.Cards.AddRange(cards);
-                return await dbContext.SaveChangesAsync();
+                csvReader.Read();
+                csvReader.ReadHeader();
+                while (csvReader.Read())
+                {
+                    var record = new Card
+                    {
+                        Id = csvReader.GetField("Id"),
+                        UserId = csvReader.GetField("UserId"),
+                        CardPan = csvReader.GetField("CardPan"),
+                        CardType = csvReader.GetField("CardType")
+                    };
+                    dbContext.Cards.Add(record);
+                }
             }
+
+            return await dbContext.SaveChangesAsync();
         }
 
         public async Task<int> SeedTransactionEntries()
