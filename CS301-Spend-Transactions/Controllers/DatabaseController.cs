@@ -1,5 +1,6 @@
 using CS301_Spend_Transactions.Controllers.Interfaces;
 using CS301_Spend_Transactions.Repo.Helpers.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace CS301_Spend_Transactions.Controllers
@@ -15,9 +16,10 @@ namespace CS301_Spend_Transactions.Controllers
             _databaseSeeder = databaseSeeder;
         }
 
-        public void SeedUsers()
+        [HttpGet("/api/Database/SeedUsers")]
+        public async void SeedUsers()
         {
-            throw new System.NotImplementedException();
+            await _databaseSeeder.SeedUserEntries();
         }
 
         public void SeedCards()
