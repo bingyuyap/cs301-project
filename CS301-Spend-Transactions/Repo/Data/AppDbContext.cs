@@ -363,6 +363,9 @@ namespace CS301_Spend_Transactions
             {
                 entity.HasKey(g => g.MinMCC)
                     .HasName("groups_pkey");
+                
+                // Mapping the entity to table
+                entity.ToTable("groups");
             })
 
             base.OnModelCreating(modelBuilder);
