@@ -7,5 +7,7 @@ namespace CS301_Spend_Transactions.Controllers.Interfaces
         void SeedCards();
 
         void SeedTransactions();
+
+        void SeedGroups();
     }
 }
