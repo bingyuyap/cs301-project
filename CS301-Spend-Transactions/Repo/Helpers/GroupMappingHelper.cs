@@ -17,6 +17,8 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             _logger = logger;
         }
         
+        // Currently just taking every group from database and iterate
+        // Won't affect the performance since the number of groups are limited
         public string GetGroupFromMCC(int MCC)
         {
             
