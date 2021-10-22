@@ -20,7 +20,7 @@ namespace CS301_Spend_Transactions
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Points> Points { get; set; }
         public DbSet<Reward> Rewards { get; set; }
-        public DbSet<Group> Group { get; set; }
+        public DbSet<Groups> Groups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -358,6 +358,12 @@ namespace CS301_Spend_Transactions
                     // Foreign Key Constraint name 
                     .HasConstraintName("transaction_merchant_fkey");
             });
+            
+            modelBuilder.Entity<Groups>(entity =>
+            {
+                entity.HasKey(g => g.MinMCC)
+                    .HasName("groups_pkey");
+            })
 
             base.OnModelCreating(modelBuilder);
             // Customize the ASP.NET Identity model and override the defaults if needed.
