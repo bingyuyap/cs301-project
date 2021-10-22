@@ -358,15 +358,19 @@ namespace CS301_Spend_Transactions
                     // Foreign Key Constraint name 
                     .HasConstraintName("transaction_merchant_fkey");
             });
-            
+
             modelBuilder.Entity<Groups>(entity =>
             {
                 entity.HasKey(g => g.MinMCC)
                     .HasName("groups_pkey");
-                
+
                 // Mapping the entity to table
                 entity.ToTable("groups");
-            })
+
+                entity.Property(g => g.MinMCC).HasColumnName("min_mcc");
+                entity.Property(g => g.MaxMCC).HasColumnName("max_mcc");
+                entity.Property(g => g.Name).HasColumnName("name");
+            });
 
             base.OnModelCreating(modelBuilder);
             // Customize the ASP.NET Identity model and override the defaults if needed.
