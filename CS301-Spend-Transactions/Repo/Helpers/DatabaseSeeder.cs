@@ -56,7 +56,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                     var record = new Card
                     {
                         Id = csvReader.GetField("Id"),
-                        UserId = csvReader.GetField("UserId"),
+                         UserId = csvReader.GetField("UserId"),
                         CardPan = csvReader.GetField("CardPan"),
                         CardType = csvReader.GetField("CardType")
                     };
@@ -94,5 +94,31 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             
             return await dbContext.SaveChangesAsync();
         }
+
+        public async Task<int> SeedGroupEntries()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            
+            using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/DummyTransactions.csv"))
+            {
+                CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
+                csvReader.Read();
+                csvReader.ReadHeader();
+                while (csvReader.Read())
+                {
+                    var record = new Groups
+                    {
+                        MinMCC = csvReader.GetField<int>("MinMCC"),
+                        MaxMCC = csvReader.GetField<int>("MaxMCC"), 
+                        Name = csvReader.GetField("Name"),
+                    };
+                    dbContext.Groups.Add(record);
+                }
+            }
+            
+            return await dbContext.SaveChangesAsync();
+        }
+
     }
 }
