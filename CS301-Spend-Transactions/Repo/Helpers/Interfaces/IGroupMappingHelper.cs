@@ -1,6 +1,6 @@
 namespace CS301_Spend_Transactions.Repo.Helpers.Interfaces
 {
-    public interface GroupMappingHelper
+    public interface IGroupMappingHelper
     {
         
     }
