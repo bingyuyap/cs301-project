@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore;
 using CS301_Spend_Transactions.Models;
@@ -19,6 +20,7 @@ namespace CS301_Spend_Transactions
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Points> Points { get; set; }
         public DbSet<Reward> Rewards { get; set; }
+        public DbSet<Group> Group { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
