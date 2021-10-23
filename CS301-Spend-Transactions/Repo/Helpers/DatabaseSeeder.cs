@@ -119,6 +119,34 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             
             return await dbContext.SaveChangesAsync();
         }
+        
+        public async Task<int> SeedProgramEntries()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            
+            using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/Groups.csv"))
+            {
+                CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
+                csvReader.Read();
+                csvReader.ReadHeader();
+                while (csvReader.Read())
+                {
+                    var record = new CS301_Spend_Transactions.Models.Program
+                    {
+                        CardType = csvReader.GetField("CardProgram"),
+                        Multiplier = csvReader.GetField<float>("Earn"),
+                        MinSpend = csvReader.GetField<int>("MinSpend"),
+                        MaxSpend = csvReader.GetField<int>("MaxSpend"),
+                        ForeignSpend = csvReader.GetField<bool>("Foreign")
+                    };
+
+                    dbContext.Rules.Add(record);
+                }
+            }
+            
+            return await dbContext.SaveChangesAsync();
+        }
 
     }
 }
