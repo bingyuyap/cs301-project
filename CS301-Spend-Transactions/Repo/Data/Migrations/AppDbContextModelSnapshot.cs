@@ -149,15 +149,10 @@ namespace CS301_Spend_Transactions.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("RewardId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id")
                         .HasName("rules_pkey");
 
                     b.HasIndex("CardId");
-
-                    b.HasIndex("RewardId");
 
                     b.ToTable("rules");
 
@@ -332,10 +327,6 @@ namespace CS301_Spend_Transactions.Migrations
                     b.HasOne("CS301_Spend_Transactions.Models.Card", null)
                         .WithMany("Rules")
                         .HasForeignKey("CardId");
-
-                    b.HasOne("CS301_Spend_Transactions.Models.Reward", null)
-                        .WithMany("Rules")
-                        .HasForeignKey("RewardId");
                 });
 
             modelBuilder.Entity("CS301_Spend_Transactions.Models.Transaction", b =>

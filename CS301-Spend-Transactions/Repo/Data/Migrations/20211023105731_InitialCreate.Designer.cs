@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CS301_Spend_Transactions.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211011031049_IntitialCreate")]
-    partial class IntitialCreate
+    [Migration("20211023105731_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,6 +42,27 @@ namespace CS301_Spend_Transactions.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("cards");
+                });
+
+            modelBuilder.Entity("CS301_Spend_Transactions.Models.Groups", b =>
+                {
+                    b.Property<int>("MinMCC")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("min_mcc")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaxMCC")
+                        .HasColumnName("max_mcc")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnName("name")
+                        .HasColumnType("text");
+
+                    b.HasKey("MinMCC")
+                        .HasName("groups_pkey");
+
+                    b.ToTable("groups");
                 });
 
             modelBuilder.Entity("CS301_Spend_Transactions.Models.Merchant", b =>
@@ -237,17 +258,11 @@ namespace CS301_Spend_Transactions.Migrations
                         .HasColumnName("min_spend")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<int>("RewardId")
-                        .HasColumnName("RewardId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnName("start_date")
                         .HasColumnType("datetime");
 
                     b.HasIndex("MerchantName");
-
-                    b.HasIndex("RewardId");
 
                     b.HasDiscriminator().HasValue("Campaign");
                 });
@@ -283,13 +298,6 @@ namespace CS301_Spend_Transactions.Migrations
                         .HasColumnName("multiplier")
                         .HasColumnType("float");
 
-                    b.Property<int>("RewardId")
-                        .HasColumnName("RewardId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("RewardId")
-                        .HasName("IX_rules_RewardId1");
-
                     b.HasDiscriminator().HasValue("Program");
                 });
 
@@ -318,10 +326,9 @@ namespace CS301_Spend_Transactions.Migrations
 
             modelBuilder.Entity("CS301_Spend_Transactions.Models.Rule", b =>
                 {
-                    b.HasOne("CS301_Spend_Transactions.Models.Card", "Card")
+                    b.HasOne("CS301_Spend_Transactions.Models.Card", null)
                         .WithMany("Rules")
-                        .HasForeignKey("CardId")
-                        .HasConstraintName("campaign_card_fkey");
+                        .HasForeignKey("CardId");
                 });
 
             modelBuilder.Entity("CS301_Spend_Transactions.Models.Transaction", b =>
@@ -343,22 +350,6 @@ namespace CS301_Spend_Transactions.Migrations
                         .WithMany("Campaigns")
                         .HasForeignKey("MerchantName")
                         .HasConstraintName("campaign_merchant_fkey");
-
-                    b.HasOne("CS301_Spend_Transactions.Models.Reward", "Reward")
-                        .WithMany("Rules")
-                        .HasForeignKey("RewardId")
-                        .HasConstraintName("reward_campaign_fkey")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CS301_Spend_Transactions.Models.Program", b =>
-                {
-                    b.HasOne("CS301_Spend_Transactions.Models.Reward", "Reward")
-                        .WithMany()
-                        .HasForeignKey("RewardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -4,10 +4,24 @@ using MySql.Data.EntityFrameworkCore.Metadata;
 
 namespace CS301_Spend_Transactions.Migrations
 {
-    public partial class IntitialCreate : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "groups",
+                columns: table => new
+                {
+                    min_mcc = table.Column<int>(nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    max_mcc = table.Column<int>(nullable: false),
+                    name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("groups_pkey", x => x.min_mcc);
+                });
+
             migrationBuilder.CreateTable(
                 name: "merchants",
                 columns: table => new
@@ -80,7 +94,6 @@ namespace CS301_Spend_Transactions.Migrations
                     card_type = table.Column<string>(nullable: true),
                     CardId = table.Column<string>(nullable: true),
                     Discriminator = table.Column<string>(nullable: false),
-                    RewardId = table.Column<int>(nullable: true),
                     MerchantName = table.Column<string>(nullable: true),
                     description = table.Column<string>(nullable: true),
                     start_date = table.Column<DateTime>(nullable: true),
@@ -101,19 +114,7 @@ namespace CS301_Spend_Transactions.Migrations
                         principalColumn: "name",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "reward_campaign_fkey",
-                        column: x => x.RewardId,
-                        principalTable: "rewards",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_rules_rewards_RewardId",
-                        column: x => x.RewardId,
-                        principalTable: "rewards",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "campaign_card_fkey",
+                        name: "FK_rules_cards_CardId",
                         column: x => x.CardId,
                         principalTable: "cards",
                         principalColumn: "id",
@@ -197,16 +198,6 @@ namespace CS301_Spend_Transactions.Migrations
                 column: "MerchantName");
 
             migrationBuilder.CreateIndex(
-                name: "IX_rules_RewardId",
-                table: "rules",
-                column: "RewardId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_rules_RewardId1",
-                table: "rules",
-                column: "RewardId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_rules_CardId",
                 table: "rules",
                 column: "CardId");
@@ -225,16 +216,19 @@ namespace CS301_Spend_Transactions.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "groups");
+
+            migrationBuilder.DropTable(
                 name: "points");
 
             migrationBuilder.DropTable(
                 name: "rules");
 
             migrationBuilder.DropTable(
-                name: "transactions");
+                name: "rewards");
 
             migrationBuilder.DropTable(
-                name: "rewards");
+                name: "transactions");
 
             migrationBuilder.DropTable(
                 name: "cards");
