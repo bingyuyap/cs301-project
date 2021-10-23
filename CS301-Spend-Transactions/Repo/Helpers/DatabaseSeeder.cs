@@ -125,7 +125,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             
-            using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/Groups.csv"))
+            using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/Programs.csv"))
             {
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
                 csvReader.Read();
