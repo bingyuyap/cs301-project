@@ -24,9 +24,9 @@ namespace CS301_Spend_Transactions.Models
 
     public class Program : Rule
     {
-        public int RewardId { get; set; } // references reward table
-
-        public virtual Reward Reward { get; set; } // references reward table
+        // public int RewardId { get; set; } // references reward table
+        //
+        // public virtual Reward Reward { get; set; } // references reward table
         
         public float Multiplier { get; set; }
         
@@ -40,9 +40,9 @@ namespace CS301_Spend_Transactions.Models
 
     public class Campaign : Rule
     {
-        public int RewardId { get; set; } // references reward table
-        // Since this references merchant table I am changing the attribute to Merchant -Bing
-        public virtual Reward Reward { get; set; }
+        // public int RewardId { get; set; } // references reward table
+        // // Since this references merchant table I am changing the attribute to Merchant -Bing
+        // public virtual Reward Reward { get; set; }
         
         public string MerchantName { get; set; } // references merchant table
         
