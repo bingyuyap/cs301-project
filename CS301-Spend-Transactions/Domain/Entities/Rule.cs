@@ -13,8 +13,8 @@ namespace CS301_Spend_Transactions.Models
         // TODO: Change this to enum?
         public string CardType { get; set; }
 
-        public Card Card { get; set; }
-        public string CardId { get; set; }
+        // public Card Card { get; set; }
+        // public string CardId { get; set; }
     }
 
     public class Exclusion : Rule
