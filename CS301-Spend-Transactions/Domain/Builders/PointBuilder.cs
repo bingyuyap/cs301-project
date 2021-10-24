@@ -7,7 +7,7 @@ namespace CS301_Spend_Transactions.Domain.Builders
     {
         private Points _points;
 
-        public PointBuilder Create(string cardType, string transactionId, decimal amount)
+        public PointBuilder Create(Rule rule, string cardType, string transactionId, decimal amount)
         {
             if (cardType == "scis_shopping")
                 _points = new PointsPoint();
@@ -18,7 +18,7 @@ namespace CS301_Spend_Transactions.Domain.Builders
 
             _points.Id = Guid.NewGuid().ToString();
             _points.TransactionId = transactionId;
-            _points.Amount = amount;
+            _points.Amount = amount * rule.GetReward();
             _points.ProcessedDate = DateTime.UtcNow;
             return this;
         }
