@@ -19,7 +19,7 @@ namespace CS301_Spend_Transactions.Controllers
             _cardService = cardService;
         }
         
-        [HttpGet("/api/User/GetUser")]
+        [HttpGet("/api/Card/GetCard")]
         public Card GetCardById(string Id)
         {
             return _cardService.GetCardById(Id);
