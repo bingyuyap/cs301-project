@@ -20,4 +20,19 @@ namespace CS301_Spend_Transactions.Models
         
         // public virtual Reward Reward { get; set; }
     }
+
+    public class PointsPoint : Points
+    {
+        
+    }
+
+    public class Miles : Points
+    {
+        
+    }
+    
+    public class CashBack: Points
+    {
+        
+    }
 }
