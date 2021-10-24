@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CS301_Spend_Transactions.Models;
 
 namespace CS301_Spend_Transactions.Models
 {
@@ -20,12 +21,12 @@ namespace CS301_Spend_Transactions.Models
         //
         public virtual ICollection<Transaction> Transactions { get; set; }
 
-        public abstract Reward computeReward();
+        public abstract Reward computeReward(Transaction transaction);
     }
 
     public class PointCard : Card
     {
-        public override Reward computeReward()
+        public override Reward computeReward(Transaction transaction)
         {
             throw new NotImplementedException();
         }
@@ -33,7 +34,7 @@ namespace CS301_Spend_Transactions.Models
 
     public class MilesCard : Card
     {
-        public override Reward computeReward()
+        public override Reward computeReward(Transaction transaction)
         {
             throw new NotImplementedException();
         }
@@ -41,7 +42,7 @@ namespace CS301_Spend_Transactions.Models
 
     public class CashbackCard : Card
     {
-        public override Reward computeReward()
+        public override Reward computeReward(Transaction transaction)
         {
             throw new NotImplementedException();
         }
