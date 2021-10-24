@@ -17,6 +17,7 @@ namespace CS301_Spend_Transactions
         public DbSet<User> Users { get; set; }
         public DbSet<Card> Cards { get; set; }
         public DbSet<Rule> Rules { get; set; }
+        public DbSet<CS301_Spend_Transactions.Models.Program> Programs { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Points> Points { get; set; }
         public DbSet<Reward> Rewards { get; set; }
