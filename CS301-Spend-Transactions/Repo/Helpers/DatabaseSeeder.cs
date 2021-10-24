@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using CS301_Spend_Transactions.Domain.Builders;
 using CS301_Spend_Transactions.Models;
 using CS301_Spend_Transactions.Repo.Helpers.Interfaces;
 using CS301_Spend_Transactions.Services;
@@ -51,16 +52,18 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
                 csvReader.Read();
                 csvReader.ReadHeader();
+
+                CardBuilder cardBuilder = new CardBuilder();
                 while (csvReader.Read())
                 {
-                    var record = new Card
-                    {
-                        Id = csvReader.GetField("Id"),
-                         UserId = csvReader.GetField("UserId"),
-                        CardPan = csvReader.GetField("CardPan"),
-                        CardType = csvReader.GetField("CardType")
-                    };
-                    dbContext.Cards.Add(record);
+                    var record = cardBuilder.Create(
+                        csvReader.GetField("Id"),
+                        csvReader.GetField("UserId"),
+                        csvReader.GetField("CardPan"),
+                        csvReader.GetField("CardType")
+                        );
+                    
+                    dbContext.Cards.Add(record.Build());
                 }
             }
 
