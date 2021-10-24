@@ -24,7 +24,7 @@ namespace CS301_Spend_Transactions.Models
         public int MCC { get; set; }
         public override decimal GetReward()
         {
-            throw new NotImplementedException();
+            return 0;
         }
     }
 
