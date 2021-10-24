@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CS301_Spend_Transactions.Models
 {
-    public class Card
+    public abstract class Card
     {
         public string Id { get; set; }
         public string UserId { get; set; }
@@ -19,5 +19,20 @@ namespace CS301_Spend_Transactions.Models
         // public virtual ICollection<Campaign> Campaigns { get; set; }
         //
         public virtual ICollection<Transaction> Transactions { get; set; }
+    }
+
+    public class PointCard : Card
+    {
+        
+    }
+
+    public class MilesCard : Card
+    {
+        
+    }
+
+    public class CashbackCard : Card
+    {
+        
     }
 }
