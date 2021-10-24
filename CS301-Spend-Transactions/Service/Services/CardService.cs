@@ -25,7 +25,7 @@ namespace CS301_Spend_Transactions.Services
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
             // Using LINQ expressions here
-            return dbContext.Cards.FirstOrDefault(card => card.Id == Id);
+            return dbContext.Cards.First(card => card.Id == Id);
         }
     }
 }
