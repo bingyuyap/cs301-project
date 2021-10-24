@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
@@ -80,6 +81,8 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
                 csvReader.Read();
                 csvReader.ReadHeader();
+
+                PointBuilder pointBuilder = new PointBuilder();
                 while (csvReader.Read())
                 {
                     var record = new Transaction
@@ -94,9 +97,11 @@ namespace CS301_Spend_Transactions.Repo.Helpers
 
                     Card card = cardService.GetCardById(record.CardId);
                     Rule rule = ruleService.GetRule(card, record);
+                    PointBuilder point = pointBuilder.Create(card.CardType, record.Id, record.Amount);
                     
 
                     dbContext.Transactions.Add(record);
+                    dbContext.Points.Add(point.Build());
                 }
             }
             
