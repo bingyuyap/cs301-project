@@ -13,7 +13,7 @@ namespace CS301_Spend_Transactions.Models
         // TODO: Change this to enum?
         public string CardType { get; set; }
 
-        public abstract float GetReward();
+        public abstract decimal GetReward();
 
         // public Card Card { get; set; }
         // public string CardId { get; set; }
@@ -22,7 +22,7 @@ namespace CS301_Spend_Transactions.Models
     public class Exclusion : Rule
     {
         public int MCC { get; set; }
-        public override float GetReward()
+        public override decimal GetReward()
         {
             return 0;
         }
@@ -34,7 +34,7 @@ namespace CS301_Spend_Transactions.Models
         //
         // public virtual Reward Reward { get; set; } // references reward table
         
-        public float Multiplier { get; set; }
+        public decimal Multiplier { get; set; }
         
         public decimal MinSpend { get; set; }
         
@@ -42,7 +42,7 @@ namespace CS301_Spend_Transactions.Models
         
         public bool ForeignSpend { get; set; }
 
-        public override float GetReward()
+        public override decimal GetReward()
         {
             return Multiplier;
         }
