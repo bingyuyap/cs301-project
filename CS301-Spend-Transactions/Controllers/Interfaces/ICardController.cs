@@ -1,7 +1,9 @@
+using CS301_Spend_Transactions.Models;
+
 namespace CS301_Spend_Transactions.Controllers.Interfaces
 {
-    public class ICardController
+    public interface ICardController
     {
-        
+        Card GetCardById(string Id);
     }
 }
