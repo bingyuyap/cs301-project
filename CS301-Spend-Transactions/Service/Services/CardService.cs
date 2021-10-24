@@ -8,12 +8,12 @@ namespace CS301_Spend_Transactions.Services
 {
     public class CardService : ICardService
     {
-        private readonly ILogger<UserService> _logger;
+        private readonly ILogger<CardService> _logger;
         // Manages the lifetime of the services we going to inject
         private readonly IServiceScopeFactory _scopeFactory;
         
         public CardService(IServiceScopeFactory scopeFactory,
-            ILogger<UserService> logger)
+            ILogger<CardService> logger)
         {
             _scopeFactory = scopeFactory;
             _logger = logger;
@@ -25,7 +25,7 @@ namespace CS301_Spend_Transactions.Services
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
             // Using LINQ expressions here
-            return dbContext.Cards.First(card => card.Id == Id);
+            return dbContext.Cards.FirstOrDefault(card => card.Id == Id);
         }
     }
 }
