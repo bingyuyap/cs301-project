@@ -276,13 +276,13 @@ namespace CS301_Spend_Transactions
                     .HasConstraintName("point_transaction_fkey");
                 
                 // A point belongs to a particular reward
-                entity.HasOne(p => p.Reward)
-                    // Reward could have many points
-                    .WithMany(r => r.CreditedPoints)
-                    // Define the foreign key for this relationship
-                    .HasForeignKey(p => p.RewardId)
-                    // Foreign Key Constraint name 
-                    .HasConstraintName("point_reward_fkey");
+                // entity.HasOne(p => p.Reward)
+                //     // Reward could have many points
+                //     .WithMany(r => r.CreditedPoints)
+                //     // Define the foreign key for this relationship
+                //     .HasForeignKey(p => p.RewardId)
+                //     // Foreign Key Constraint name 
+                //     .HasConstraintName("point_reward_fkey");
             });
             
             modelBuilder.Entity<Reward>(entity =>
@@ -300,13 +300,13 @@ namespace CS301_Spend_Transactions
                 entity.Property(e => e.Unit).HasColumnName("unit");
 
                 // This means reward has many points
-                entity.HasMany(r => r.CreditedPoints)
-                    // And a point belongs to a reward
-                    .WithOne(p => p.Reward)
-                    // Define the foreign key for this relationship
-                    .HasForeignKey(p => p.RewardId)
-                    // Foreign Key Constraint name 
-                    .HasConstraintName("reward_point_fkey");
+                // entity.HasMany(r => r.CreditedPoints)
+                //     // And a point belongs to a reward
+                //     .WithOne(p => p.Reward)
+                //     // Define the foreign key for this relationship
+                //     .HasForeignKey(p => p.RewardId)
+                //     // Foreign Key Constraint name 
+                //     .HasConstraintName("reward_point_fkey");
                 
                 // entity.HasMany(r => (ICollection<Models.Program>) r.Rules)
                 //     // And a point belongs to a reward
