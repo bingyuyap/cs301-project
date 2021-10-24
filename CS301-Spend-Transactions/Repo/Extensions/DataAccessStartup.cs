@@ -14,6 +14,7 @@ namespace CS301_Spend_Transactions.Extensions
         {
             // Service Injection
             services.AddTransient<ICardService, CardService>();
+            services.AddTransient<IRewardService, RewardService>();
             services.AddTransient<IRuleService, RuleService>();
             services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<IUserService, UserService>();
