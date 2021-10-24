@@ -29,6 +29,10 @@ namespace CS301_Spend_Transactions
             modelBuilder.Entity<MilesCard>();
             modelBuilder.Entity<CashbackCard>();
             
+            modelBuilder.Entity<PointsPoint>();
+            modelBuilder.Entity<Miles>();
+            modelBuilder.Entity<CashBack>();
+            
             modelBuilder.Entity<User>(entity =>
             {
                 // Defining the primary key and primary key constraint name
