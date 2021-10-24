@@ -5,9 +5,9 @@ namespace CS301_Spend_Transactions.Models
 {
     public class Points
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         
-        public int RewardId { get; set; } // references reward table
+        // public int RewardId { get; set; } // references reward table
         
         public string TransactionId { get; set; } // references transaction table
         
