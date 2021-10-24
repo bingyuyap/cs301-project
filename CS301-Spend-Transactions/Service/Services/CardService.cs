@@ -1,11 +1,12 @@
 using System.Linq;
 using CS301_Spend_Transactions.Models;
+using CS301_Spend_Transactions.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace CS301_Spend_Transactions.Services
 {
-    public class CardService
+    public class CardService : ICardService
     {
         private readonly ILogger<UserService> _logger;
         // Manages the lifetime of the services we going to inject
