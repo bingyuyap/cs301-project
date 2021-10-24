@@ -7,6 +7,7 @@ using CS301_Spend_Transactions.Domain.Builders;
 using CS301_Spend_Transactions.Models;
 using CS301_Spend_Transactions.Repo.Helpers.Interfaces;
 using CS301_Spend_Transactions.Services;
+using CS301_Spend_Transactions.Services.Interfaces;
 using CsvHelper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -72,9 +73,8 @@ namespace CS301_Spend_Transactions.Repo.Helpers
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var cardService = scope.ServiceProvider.GetRequiredService<CardService>();
-            var rewardService = scope.ServiceProvider.GetRequiredService<RewardService>();
-            var ruleService = scope.ServiceProvider.GetRequiredService<RuleService>();
+            var cardService = scope.ServiceProvider.GetRequiredService<ICardService>();
+            var ruleService = scope.ServiceProvider.GetRequiredService<IRuleService>();
             
             using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/DummyTransactions.csv"))
             {
@@ -97,7 +97,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
 
                     Card card = cardService.GetCardById(record.CardId);
                     Rule rule = ruleService.GetRule(card, record);
-                    PointBuilder point = pointBuilder.Create(card.CardType, record.Id, record.Amount);
+                    PointBuilder point = pointBuilder.Create(rule, card.CardType, record.Id, record.Amount);
                     
 
                     dbContext.Transactions.Add(record);
@@ -148,7 +148,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                     var record = new CS301_Spend_Transactions.Models.Program
                     {
                         CardType = csvReader.GetField("CardProgram"),
-                        Multiplier = csvReader.GetField<float>("Earn"),
+                        Multiplier = csvReader.GetField<decimal>("Earn"),
                         MinSpend = csvReader.GetField<int>("MinSpend"),
                         MaxSpend = csvReader.GetField<int>("MaxSpend"),
                         ForeignSpend = csvReader.GetField<bool>("Foreign")
