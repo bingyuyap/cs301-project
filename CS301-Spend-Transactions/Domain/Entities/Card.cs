@@ -21,30 +21,30 @@ namespace CS301_Spend_Transactions.Models
         //
         public virtual ICollection<Transaction> Transactions { get; set; }
 
-        public abstract Reward computeReward(Transaction transaction);
+        // public abstract Reward computeReward(Transaction transaction);
     }
 
     public class PointCard : Card
     {
-        public override Reward computeReward(Transaction transaction)
-        {
-            throw new NotImplementedException();
-        }
+        // public override Reward computeReward(Transaction transaction)
+        // {
+        //     throw new NotImplementedException();
+        // }
     }
 
     public class MilesCard : Card
     {
-        public override Reward computeReward(Transaction transaction)
-        {
-            throw new NotImplementedException();
-        }
+        // public override Reward computeReward(Transaction transaction)
+        // {
+        //     throw new NotImplementedException();
+        // }
     }
 
     public class CashbackCard : Card
     {
-        public override Reward computeReward(Transaction transaction)
-        {
-            throw new NotImplementedException();
-        }
+        // public override Reward computeReward(Transaction transaction)
+        // {
+        //     throw new NotImplementedException();
+        // }
     }
 }
