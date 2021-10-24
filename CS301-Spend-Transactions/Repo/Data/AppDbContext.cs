@@ -25,6 +25,10 @@ namespace CS301_Spend_Transactions
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<PointCard>();
+            modelBuilder.Entity<MilesCard>();
+            modelBuilder.Entity<CashbackCard>();
+            
             modelBuilder.Entity<User>(entity =>
             {
                 // Defining the primary key and primary key constraint name
