@@ -18,6 +18,6 @@ namespace CS301_Spend_Transactions.Models
         
         public virtual Transaction Transaction { get; set; }
         
-        public virtual Reward Reward { get; set; }
+        // public virtual Reward Reward { get; set; }
     }
 }
