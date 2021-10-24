@@ -7,18 +7,18 @@ namespace CS301_Spend_Transactions.Domain.Builders
     {
         private Card _card;
 
-        public CardBuilder Create(string Id, string UserId, string CardPan, string CardType)
+        public CardBuilder Create(string id, string userId, string cardPan, string cardType)
         {
-            if (CardType == "scis_shopping")
+            if (cardType == "scis_shopping")
                 _card = new PointCard();
-            else if (CardType == "scis_platinummiles" || CardType == "scis_premiummiles")
+            else if (cardType == "scis_platinummiles" || cardType == "scis_premiummiles")
                 _card = new MilesCard();
-            else if (CardType == "scis_freedom")
+            else if (cardType == "scis_freedom")
                 _card = new CashbackCard();
             
-            _card.Id = Id;
-            _card.UserId = UserId;
-            _card.CardPan = CardPan;
+            _card.Id = id;
+            _card.UserId = userId;
+            _card.CardPan = cardPan;
 
             return this;
         }
