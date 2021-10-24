@@ -14,6 +14,6 @@ namespace CS301_Spend_Transactions.Services
         {
             _scopeFactory = scopeFactory;
             _logger = logger;
-        }
+        } 
     }
 }
