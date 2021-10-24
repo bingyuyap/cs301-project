@@ -19,6 +19,7 @@ namespace CS301_Spend_Transactions.Domain.Builders
             _card.Id = id;
             _card.UserId = userId;
             _card.CardPan = cardPan;
+            _card.CardType = cardType;
 
             return this;
         }
