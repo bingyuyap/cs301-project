@@ -1,9 +1,10 @@
+using CS301_Spend_Transactions.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace CS301_Spend_Transactions.Services
 {
-    public class RewardService
+    public class RewardService : IRewardService
     {
         private readonly ILogger<UserService> _logger;
         // Manages the lifetime of the services we going to inject
