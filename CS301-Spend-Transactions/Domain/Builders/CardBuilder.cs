@@ -22,5 +22,10 @@ namespace CS301_Spend_Transactions.Domain.Builders
 
             return this;
         }
+
+        public Card Build()
+        {
+            return _card;
+        }
     }
 }
