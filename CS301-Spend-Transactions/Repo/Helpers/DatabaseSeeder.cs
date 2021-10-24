@@ -1,15 +1,12 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using CS301_Spend_Transactions.Domain.Builders;
 using CS301_Spend_Transactions.Models;
 using CS301_Spend_Transactions.Repo.Helpers.Interfaces;
 using CS301_Spend_Transactions.Services;
 using CsvHelper;
-using CsvHelper.Configuration;
-using Google.Protobuf.Collections;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -74,6 +71,9 @@ namespace CS301_Spend_Transactions.Repo.Helpers
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var cardService = scope.ServiceProvider.GetRequiredService<CardService>();
+            var rewardService = scope.ServiceProvider.GetRequiredService<RewardService>();
+            var ruleService = scope.ServiceProvider.GetRequiredService<RuleService>();
             
             using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/DummyTransactions.csv"))
             {
@@ -91,6 +91,11 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                         Currency = csvReader.GetField("Currency"),
                         Amount = csvReader.GetField<decimal>("Amount")
                     };
+
+                    Card card = cardService.GetCardById(record.CardId);
+                    Rule rule = ruleService.GetRule(card, record);
+                    
+
                     dbContext.Transactions.Add(record);
                 }
             }
