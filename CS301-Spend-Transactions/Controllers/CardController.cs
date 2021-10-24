@@ -18,5 +18,11 @@ namespace CS301_Spend_Transactions.Controllers
             _logger = logger;
             _cardService = cardService;
         }
+        
+        [HttpGet("/api/User/GetUser")]
+        public Card GetCardById(string Id)
+        {
+            return _cardService.GetCardById(Id);
+        }
     }
 }
