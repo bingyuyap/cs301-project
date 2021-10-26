@@ -35,6 +35,8 @@ namespace CS301_Spend_Transactions
             
             services.AddDbContextInjections(WebHostEnvironment, Configuration);
             
+            services.AddDataAccessInjections();
+
             services.AddControllers();
 
             // TODO: Configure and initialize DB context
