@@ -8,12 +8,12 @@ namespace CS301_Spend_Transactions.Services
 {
     public class TransactionService : ITransactionService
     {
-        private readonly ILogger<UserService> _logger;
+        private readonly ILogger<TransactionService> _logger;
         // Manages the lifetime of the services we going to inject
         private readonly IServiceScopeFactory _scopeFactory;
 
         public TransactionService(IServiceScopeFactory scopeFactory,
-            ILogger<UserService> logger)
+            ILogger<TransactionService> logger)
         {
             _scopeFactory = scopeFactory;
             _logger = logger;

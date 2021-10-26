@@ -12,9 +12,9 @@ namespace CS301_Spend_Transactions.Models
         
         public string Unit { get; set; }
 
-        public ICollection<Points> CreditedPoints { get; set; }
+        // public ICollection<Points> CreditedPoints { get; set; }
         
-        public ICollection<Rule> Rules { get; set; }
+        // public ICollection<Rule> Rules { get; set; }
         
         // public ICollection<Campaign> Campaigns { get; set; }
     }

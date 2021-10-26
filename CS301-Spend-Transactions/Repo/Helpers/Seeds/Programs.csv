@@ -1,0 +1,12 @@
+CardProgram,Earn,Category,Foreign,Online,MinSpend,MaxSpend
+scis_shopping,1,all,false,false,0,-1
+scis_shopping,4,shopping,false,false,0,-1
+scis_shopping,10,all,true,true,0,-1,-1
+scis_premiummiles,1.1,all,false,false,0,-1
+scis_premiummiles,1.2,all,false,false,0,-1
+scis_premiummiles,1.2,all,false,false,0,-1
+scis_platinummiles,2.4,all,false,false,0,-1
+scis_platinummiles,3,all,false,false,0,-1
+scis_freedom,0.5,all,false,false,0,-1
+scis_freedom,1.0,all,false,false,500,-1
+scis_freedom,3.0,all,false,false,2000,-1

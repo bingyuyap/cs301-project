@@ -13,36 +13,46 @@ namespace CS301_Spend_Transactions.Models
         // TODO: Change this to enum?
         public string CardType { get; set; }
 
-        public Card Card { get; set; }
-        public string CardId { get; set; }
+        public abstract decimal GetReward();
+
+        // public Card Card { get; set; }
+        // public string CardId { get; set; }
     }
 
     public class Exclusion : Rule
     {
         public int MCC { get; set; }
+        public override decimal GetReward()
+        {
+            return 0;
+        }
     }
 
     public class Program : Rule
     {
-        public int RewardId { get; set; } // references reward table
-
-        public virtual Reward Reward { get; set; } // references reward table
+        // public int RewardId { get; set; } // references reward table
+        //
+        // public virtual Reward Reward { get; set; } // references reward table
         
-        public float Multiplier { get; set; }
+        public decimal Multiplier { get; set; }
         
         public decimal MinSpend { get; set; }
         
         public decimal MaxSpend { get; set; }
         
         public bool ForeignSpend { get; set; }
-        
+
+        public override decimal GetReward()
+        {
+            return Multiplier;
+        }
     }
 
     public class Campaign : Rule
     {
-        public int RewardId { get; set; } // references reward table
-        // Since this references merchant table I am changing the attribute to Merchant -Bing
-        public virtual Reward Reward { get; set; }
+        // public int RewardId { get; set; } // references reward table
+        // // Since this references merchant table I am changing the attribute to Merchant -Bing
+        // public virtual Reward Reward { get; set; }
         
         public string MerchantName { get; set; } // references merchant table
         
@@ -59,5 +69,9 @@ namespace CS301_Spend_Transactions.Models
         public decimal MaxSpend { get; set; }
         
         public bool ForeignSpend { get; set; }
+        public override decimal GetReward()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
