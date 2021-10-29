@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace CS301_Spend_Transactions.Models
 {
+    /**
+     * Entity representing a User with basic details 
+     */
     public class User
     {
         public string Id { get; set; }
