@@ -4,7 +4,11 @@ using CS301_Spend_Transactions.Models;
 
 namespace CS301_Spend_Transactions.Models
 {
-    public abstract class Card
+    /**
+     * Entity representing a Card, which references a User and a set of Rules that apply
+     * to all transactions involving that Card
+     */
+    public class Card
     {
         public string Id { get; set; }
         public string UserId { get; set; }
@@ -14,37 +18,6 @@ namespace CS301_Spend_Transactions.Models
         public virtual User User { get; set; }
         
         public virtual ICollection<Rule> Rules { get; set; }
-        
-        // public virtual ICollection<Exclusion> Exclusions { get; set; }
-        //
-        // public virtual ICollection<Campaign> Campaigns { get; set; }
-        //
         public virtual ICollection<Transaction> Transactions { get; set; }
-
-        // public abstract Reward computeReward(Transaction transaction);
-    }
-
-    public class PointCard : Card
-    {
-        // public override Reward computeReward(Transaction transaction)
-        // {
-        //     throw new NotImplementedException();
-        // }
-    }
-
-    public class MilesCard : Card
-    {
-        // public override Reward computeReward(Transaction transaction)
-        // {
-        //     throw new NotImplementedException();
-        // }
-    }
-
-    public class CashbackCard : Card
-    {
-        // public override Reward computeReward(Transaction transaction)
-        // {
-        //     throw new NotImplementedException();
-        // }
     }
 }
