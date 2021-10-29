@@ -51,18 +51,18 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
                 csvReader.Read();
                 csvReader.ReadHeader();
-
-                CardBuilder cardBuilder = new CardBuilder();
+                
                 while (csvReader.Read())
                 {
-                    var record = cardBuilder.Create(
-                        csvReader.GetField("Id"),
-                        csvReader.GetField("UserId"),
-                        csvReader.GetField("CardPan"),
-                        csvReader.GetField("CardType")
-                        );
-                    
-                    dbContext.Cards.Add(record.Build());
+                    var record = new Card
+                    {
+                        Id = csvReader.GetField("Id"),
+                        UserId = csvReader.GetField("UserId"),
+                        CardPan = csvReader.GetField("CardPan"),
+                        CardType = csvReader.GetField("CardType")
+                    };
+
+                    dbContext.Cards.Add(record);
                 }
             }
 
