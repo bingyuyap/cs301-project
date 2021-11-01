@@ -165,6 +165,31 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             
             return await dbContext.SaveChangesAsync();
         }
+        
+        public async Task<int> SeedMerchantEntries()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            
+            using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/Merchants.csv"))
+            {
+                CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
+                csvReader.Read();
+                csvReader.ReadHeader();
+                while (csvReader.Read())
+                {
+                    var record = new Merchant()
+                    {
+                        Name = csvReader.GetField("MerchantName"),
+                        MCC = csvReader.GetField<int>("MCC"),
+                    };
+
+                    dbContext.Merchants.Add(record);
+                }
+            }
+            
+            return await dbContext.SaveChangesAsync();
+        }
 
     }
 }

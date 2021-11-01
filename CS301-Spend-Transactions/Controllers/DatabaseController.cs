@@ -16,6 +16,17 @@ namespace CS301_Spend_Transactions.Controllers
             _databaseSeeder = databaseSeeder;
         }
 
+        [HttpGet("/api/Database/InitialSeed")]
+        public async void InitialSeed()
+        {
+            await _databaseSeeder.SeedUserEntries();
+            await _databaseSeeder.SeedCardEntries();
+            await _databaseSeeder.SeedMerchantEntries();
+            await _databaseSeeder.SeedGroupEntries();
+            await _databaseSeeder.SeedProgramEntries();
+            await _databaseSeeder.SeedTransactionEntries();
+        }
+
         [HttpGet("/api/Database/SeedUsers")]
         public async void SeedUsers()
         {
@@ -44,6 +55,12 @@ namespace CS301_Spend_Transactions.Controllers
         public async void SeedPrograms()
         {
             await _databaseSeeder.SeedProgramEntries();
+        }
+        
+        [HttpGet("/api/Database/SeedMerchants")]
+        public async void SeedMerchants()
+        {
+            await _databaseSeeder.SeedMerchantEntries();
         }
     }
 }
