@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 /**
- * Create subtypes of Rule class with entity type hierarch mapping 
+ * Create subtypes of Rule class with entity type hierarchy mapping 
  * (https://docs.microsoft.com/en-us/ef/core/modeling/inheritance)
  */
 namespace CS301_Spend_Transactions.Models
@@ -13,20 +13,18 @@ namespace CS301_Spend_Transactions.Models
      */
     public abstract class Rule
     {
+        // Primary key
         public int Id { get; set; }
+        public string CardType { get; set; }
+        public decimal MinSpend { get; set; }
+        public decimal MaxSpend { get; set; }
+        public bool ForeignSpend { get; set; }
         
-        public int PointsTypeId { get; set; } // References points type
-
+        // Foreign key
+        public int PointsTypeId { get; set; } 
+        // Navigation properties
         public virtual PointsType PointsType { get; set; }
         
-        public string CardType { get; set; }
-
-        public decimal MinSpend { get; set; }
-        
-        public decimal MaxSpend { get; set; }
-
-        public bool ForeignSpend { get; set; }
-
         public abstract decimal GetReward(decimal amount);
     }
 
@@ -49,17 +47,16 @@ namespace CS301_Spend_Transactions.Models
      */
     public class Campaign : Rule
     {
-        public string MerchantName { get; set; } // references merchant table
-        
-        public Merchant Merchant { get; set; }
-        
         public string Description { get; set; }
-        
         public DateTime StartDate { get; set; }
-        
         public DateTime EndDate { get; set; }
-        
         public decimal Multiplier { get; set; }
+        
+        // Foreign key
+        public string MerchantName { get; set; }
+        
+        // Navigation properties
+        public Merchant Merchant { get; set; }
         
         public override decimal GetReward(decimal amount)
         {

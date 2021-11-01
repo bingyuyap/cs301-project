@@ -6,10 +6,9 @@
      */
     public class Exclusion
     {
+        // Primary key
         public int Id { get; set; }
-        
         public string CardType { get; set; }
-
         public int MCC { get; set; }
     }
 

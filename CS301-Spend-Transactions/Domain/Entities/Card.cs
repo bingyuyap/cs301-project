@@ -9,14 +9,17 @@ namespace CS301_Spend_Transactions.Models
      * to all transactions involving that Card
      */
     public class Card
-    {
+    {   
+        // Primary key
         public string Id { get; set; }
-        public string UserId { get; set; }
         public string CardPan { get; set; }
         public string CardType { get; set; }
-
-        public virtual User User { get; set; }
         
+        // Foreign key
+        public string UserId { get; set; }
+        
+        // Navigation Properties
+        public virtual User User { get; set; }
         public virtual ICollection<Rule> Rules { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; }
     }
