@@ -20,7 +20,6 @@ namespace CS301_Spend_Transactions.Models
         
         // Navigation Properties
         public virtual User User { get; set; }
-        public virtual ICollection<Rule> Rules { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

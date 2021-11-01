@@ -19,6 +19,7 @@ namespace CS301_Spend_Transactions.Models
         public decimal MinSpend { get; set; }
         public decimal MaxSpend { get; set; }
         public bool ForeignSpend { get; set; }
+        public decimal Multiplier { get; set; }
         
         // Foreign key
         public int PointsTypeId { get; set; } 
@@ -33,8 +34,6 @@ namespace CS301_Spend_Transactions.Models
      */
     public class Program : Rule
     {
-        public decimal Multiplier { get; set; }
-        
         public override decimal GetReward(decimal amount)
         {
             return Multiplier * amount;
@@ -50,7 +49,6 @@ namespace CS301_Spend_Transactions.Models
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public decimal Multiplier { get; set; }
         
         // Foreign key
         public string MerchantName { get; set; }

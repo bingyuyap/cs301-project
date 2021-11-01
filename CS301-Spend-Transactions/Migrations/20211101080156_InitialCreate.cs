@@ -9,13 +9,27 @@ namespace CS301_Spend_Transactions.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "exclusions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    card_type = table.Column<string>(nullable: true),
+                    mcc = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("exclusions_pkey", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "groups",
                 columns: table => new
                 {
                     min_mcc = table.Column<int>(nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    max_mcc = table.Column<int>(nullable: false),
-                    name = table.Column<string>(nullable: true)
+                    name = table.Column<string>(nullable: true),
+                    max_mcc = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -35,7 +49,7 @@ namespace CS301_Spend_Transactions.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "rewards",
+                name: "points_type",
                 columns: table => new
                 {
                     id = table.Column<int>(nullable: false)
@@ -66,13 +80,48 @@ namespace CS301_Spend_Transactions.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "rules",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    card_type = table.Column<string>(nullable: true),
+                    min_spend = table.Column<decimal>(nullable: false),
+                    max_spend = table.Column<decimal>(nullable: false),
+                    foreign_spend = table.Column<bool>(nullable: false),
+                    multiplier = table.Column<decimal>(nullable: false),
+                    PointsTypeId = table.Column<int>(nullable: false),
+                    Discriminator = table.Column<string>(nullable: false),
+                    description = table.Column<string>(nullable: true),
+                    start_date = table.Column<DateTime>(nullable: true),
+                    end_date = table.Column<DateTime>(nullable: true),
+                    MerchantName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("rules_pkey", x => x.id);
+                    table.ForeignKey(
+                        name: "campaign_merchant_fkey",
+                        column: x => x.MerchantName,
+                        principalTable: "merchants",
+                        principalColumn: "name",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "pointsType_rule_fkey",
+                        column: x => x.PointsTypeId,
+                        principalTable: "points_type",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "cards",
                 columns: table => new
                 {
                     id = table.Column<string>(nullable: false),
-                    UserId = table.Column<string>(nullable: true),
                     card_pan = table.Column<string>(nullable: true),
-                    card_type = table.Column<string>(nullable: true)
+                    card_type = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -86,51 +135,15 @@ namespace CS301_Spend_Transactions.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "rules",
-                columns: table => new
-                {
-                    id = table.Column<int>(nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    card_type = table.Column<string>(nullable: true),
-                    CardId = table.Column<string>(nullable: true),
-                    Discriminator = table.Column<string>(nullable: false),
-                    MerchantName = table.Column<string>(nullable: true),
-                    description = table.Column<string>(nullable: true),
-                    start_date = table.Column<DateTime>(nullable: true),
-                    end_date = table.Column<DateTime>(nullable: true),
-                    min_spend = table.Column<decimal>(nullable: true),
-                    max_spend = table.Column<decimal>(nullable: true),
-                    foreign_spend = table.Column<bool>(nullable: true),
-                    mcc = table.Column<int>(nullable: true),
-                    multiplier = table.Column<float>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("rules_pkey", x => x.id);
-                    table.ForeignKey(
-                        name: "campaign_merchant_fkey",
-                        column: x => x.MerchantName,
-                        principalTable: "merchants",
-                        principalColumn: "name",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_rules_cards_CardId",
-                        column: x => x.CardId,
-                        principalTable: "cards",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "transactions",
                 columns: table => new
                 {
                     id = table.Column<string>(nullable: false),
-                    CardId = table.Column<string>(nullable: true),
-                    MerchantName = table.Column<string>(nullable: true),
                     transaction_date = table.Column<DateTime>(nullable: false),
                     currency = table.Column<string>(nullable: true),
-                    amount = table.Column<decimal>(nullable: false)
+                    amount = table.Column<decimal>(nullable: false),
+                    CardId = table.Column<string>(nullable: true),
+                    MerchantName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -155,18 +168,18 @@ namespace CS301_Spend_Transactions.Migrations
                 {
                     id = table.Column<int>(nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    RewardId = table.Column<int>(nullable: false),
-                    TransactionId = table.Column<string>(nullable: true),
                     amount = table.Column<decimal>(nullable: false),
-                    processed_date = table.Column<DateTime>(nullable: false)
+                    processed_date = table.Column<DateTime>(nullable: false),
+                    TransactionId = table.Column<string>(nullable: true),
+                    PointsTypeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("points_pkey", x => x.id);
                     table.ForeignKey(
-                        name: "reward_point_fkey",
-                        column: x => x.RewardId,
-                        principalTable: "rewards",
+                        name: "pointsType_point_fkey",
+                        column: x => x.PointsTypeId,
+                        principalTable: "points_type",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -183,9 +196,9 @@ namespace CS301_Spend_Transactions.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_points_RewardId",
+                name: "IX_points_PointsTypeId",
                 table: "points",
-                column: "RewardId");
+                column: "PointsTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_points_TransactionId",
@@ -198,9 +211,9 @@ namespace CS301_Spend_Transactions.Migrations
                 column: "MerchantName");
 
             migrationBuilder.CreateIndex(
-                name: "IX_rules_CardId",
+                name: "IX_rules_PointsTypeId",
                 table: "rules",
-                column: "CardId");
+                column: "PointsTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_transactions_CardId",
@@ -216,6 +229,9 @@ namespace CS301_Spend_Transactions.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "exclusions");
+
+            migrationBuilder.DropTable(
                 name: "groups");
 
             migrationBuilder.DropTable(
@@ -225,10 +241,10 @@ namespace CS301_Spend_Transactions.Migrations
                 name: "rules");
 
             migrationBuilder.DropTable(
-                name: "rewards");
+                name: "transactions");
 
             migrationBuilder.DropTable(
-                name: "transactions");
+                name: "points_type");
 
             migrationBuilder.DropTable(
                 name: "cards");
