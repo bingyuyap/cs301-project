@@ -23,6 +23,7 @@ namespace CS301_Spend_Transactions
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Points> Points { get; set; }
         public DbSet<PointsType> PointsTypes { get; set; }
+        public DbSet<Merchant> Merchants { get; set; }
         public DbSet<Groups> Groups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
