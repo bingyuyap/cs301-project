@@ -20,7 +20,7 @@ namespace CS301_Spend_Transactions
         public DbSet<CS301_Spend_Transactions.Models.Program> Programs { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Points> Points { get; set; }
-        public DbSet<Reward> Rewards { get; set; }
+        public DbSet<PointsType> Rewards { get; set; }
         public DbSet<Groups> Groups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,9 +28,7 @@ namespace CS301_Spend_Transactions
             modelBuilder.Entity<Card>();
             
             
-            modelBuilder.Entity<PointsPoint>();
-            modelBuilder.Entity<Miles>();
-            modelBuilder.Entity<CashBack>();
+            modelBuilder.Entity<Points>();
             
             modelBuilder.Entity<User>(entity =>
             {
@@ -292,7 +290,7 @@ namespace CS301_Spend_Transactions
                 //     .HasConstraintName("point_reward_fkey");
             });
             
-            modelBuilder.Entity<Reward>(entity =>
+            modelBuilder.Entity<PointsType>(entity =>
             {
                 // Defining the primary key and primary key constraint name
                 entity.HasKey(c => c.Id)

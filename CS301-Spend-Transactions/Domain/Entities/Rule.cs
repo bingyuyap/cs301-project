@@ -7,53 +7,48 @@ using System.Collections.Generic;
  */
 namespace CS301_Spend_Transactions.Models
 {
+    /**
+     * A Rule that applies to every Transaction of a given CardType. Rule is an
+     * abstract class that can be extended based on different use cases
+     */
     public abstract class Rule
     {
         public int Id { get; set; }
-        // TODO: Change this to enum?
+        
+        public int PointsTypeId { get; set; } // References points type
+
+        public virtual PointsType PointsType { get; set; }
+        
         public string CardType { get; set; }
 
-        public abstract decimal GetReward();
-
-        // public Card Card { get; set; }
-        // public string CardId { get; set; }
-    }
-
-    public class Exclusion : Rule
-    {
-        public int MCC { get; set; }
-        public override decimal GetReward()
-        {
-            return 0;
-        }
-    }
-
-    public class Program : Rule
-    {
-        // public int RewardId { get; set; } // references reward table
-        //
-        // public virtual Reward Reward { get; set; } // references reward table
-        
-        public decimal Multiplier { get; set; }
-        
         public decimal MinSpend { get; set; }
         
         public decimal MaxSpend { get; set; }
-        
+
         public bool ForeignSpend { get; set; }
 
-        public override decimal GetReward()
-        {
-            return Multiplier;
-        }
+        public abstract decimal GetReward(decimal amount);
     }
 
+    /**
+     * Programs are the default earning scheme for a cards, and are associated with a type of point
+     */
+    public class Program : Rule
+    {
+        public decimal Multiplier { get; set; }
+        
+        public override decimal GetReward(decimal amount)
+        {
+            return Multiplier * amount;
+        }
+    }
+    
+    /**
+     * Campaigns are short-term spending bonuses that can be implemented by banks in collaboration
+     * with merchants. Their rewards are also associated with point types
+     */
     public class Campaign : Rule
     {
-        // public int RewardId { get; set; } // references reward table
-        // // Since this references merchant table I am changing the attribute to Merchant -Bing
-        // public virtual Reward Reward { get; set; }
-        
         public string MerchantName { get; set; } // references merchant table
         
         public Merchant Merchant { get; set; }
@@ -64,14 +59,11 @@ namespace CS301_Spend_Transactions.Models
         
         public DateTime EndDate { get; set; }
         
-        public decimal MinSpend { get; set; }
+        public decimal Multiplier { get; set; }
         
-        public decimal MaxSpend { get; set; }
-        
-        public bool ForeignSpend { get; set; }
-        public override decimal GetReward()
+        public override decimal GetReward(decimal amount)
         {
-            throw new NotImplementedException();
+            return Multiplier * amount;
         }
     }
 }
