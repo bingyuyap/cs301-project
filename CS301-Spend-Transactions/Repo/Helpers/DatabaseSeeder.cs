@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
-using CS301_Spend_Transactions.Domain.Builders;
 using CS301_Spend_Transactions.Models;
 using CS301_Spend_Transactions.Repo.Helpers.Interfaces;
 using CS301_Spend_Transactions.Services;
@@ -51,18 +50,18 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
                 csvReader.Read();
                 csvReader.ReadHeader();
-
-                CardBuilder cardBuilder = new CardBuilder();
+                
                 while (csvReader.Read())
                 {
-                    var record = cardBuilder.Create(
-                        csvReader.GetField("Id"),
-                        csvReader.GetField("UserId"),
-                        csvReader.GetField("CardPan"),
-                        csvReader.GetField("CardType")
-                        );
-                    
-                    dbContext.Cards.Add(record.Build());
+                    var record = new Card
+                    {
+                        Id = csvReader.GetField("Id"),
+                        UserId = csvReader.GetField("UserId"),
+                        CardPan = csvReader.GetField("CardPan"),
+                        CardType = csvReader.GetField("CardType")
+                    };
+
+                    dbContext.Cards.Add(record);
                 }
             }
 
@@ -81,8 +80,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
                 csvReader.Read();
                 csvReader.ReadHeader();
-
-                PointBuilder pointBuilder = new PointBuilder();
+                
                 while (csvReader.Read())
                 {
                     var record = new Transaction
@@ -97,11 +95,18 @@ namespace CS301_Spend_Transactions.Repo.Helpers
 
                     Card card = cardService.GetCardById(record.CardId);
                     Rule rule = ruleService.GetRule(card, record);
-                    PointBuilder point = pointBuilder.Create(rule, card.CardType, record.Id, record.Amount);
                     
 
+                    var point = new Points
+                    {
+                        TransactionId = record.Id,
+                        PointsTypeId = rule.PointsTypeId,
+                        Amount = rule.GetReward(record.Amount),
+                        ProcessedDate = DateTime.Now
+                    };
+
                     dbContext.Transactions.Add(record);
-                    dbContext.Points.Add(point.Build());
+                    dbContext.Points.Add(point);
                 }
             }
             

@@ -5,34 +5,18 @@ namespace CS301_Spend_Transactions.Models
 {
     public class Points
     {
-        public string Id { get; set; }
-        
-        // public int RewardId { get; set; } // references reward table
-        
-        public string TransactionId { get; set; } // references transaction table
-        
+        // Primary key
+        public int Id { get; set; }
         public decimal Amount { get; set; }
-        
         public DateTime ProcessedDate { get; set; }
         
+        // Foreign key
+        public string TransactionId { get; set; } // references Transaction table
+        public int PointsTypeId { get; set; } // references PointsType table  
         
+        // Navigation properties
         public virtual Transaction Transaction { get; set; }
-        
-        // public virtual Reward Reward { get; set; }
-    }
-
-    public class PointsPoint : Points
-    {
-        
-    }
-
-    public class Miles : Points
-    {
-        
-    }
-    
-    public class CashBack: Points
-    {
+        public virtual PointsType PointsType { get; set; }
         
     }
 }

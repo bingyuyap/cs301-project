@@ -31,10 +31,6 @@ namespace CS301_Spend_Transactions.Migrations
                         .HasColumnName("card_type")
                         .HasColumnType("text");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(767)");
 
@@ -44,8 +40,26 @@ namespace CS301_Spend_Transactions.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("cards");
+                });
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Card");
+            modelBuilder.Entity("CS301_Spend_Transactions.Models.Exclusion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("CardType")
+                        .HasColumnName("card_type")
+                        .HasColumnType("text");
+
+                    b.Property<int>("MCC")
+                        .HasColumnName("mcc")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id")
+                        .HasName("exclusions_pkey");
+
+                    b.ToTable("exclusions");
                 });
 
             modelBuilder.Entity("CS301_Spend_Transactions.Models.Groups", b =>
@@ -87,17 +101,17 @@ namespace CS301_Spend_Transactions.Migrations
 
             modelBuilder.Entity("CS301_Spend_Transactions.Models.Points", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("varchar(767)");
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Amount")
                         .HasColumnName("amount")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("PointsTypeId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("ProcessedDate")
                         .HasColumnName("processed_date")
@@ -109,14 +123,14 @@ namespace CS301_Spend_Transactions.Migrations
                     b.HasKey("Id")
                         .HasName("points_pkey");
 
+                    b.HasIndex("PointsTypeId");
+
                     b.HasIndex("TransactionId");
 
                     b.ToTable("points");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Points");
                 });
 
-            modelBuilder.Entity("CS301_Spend_Transactions.Models.Reward", b =>
+            modelBuilder.Entity("CS301_Spend_Transactions.Models.PointsType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -134,7 +148,7 @@ namespace CS301_Spend_Transactions.Migrations
                     b.HasKey("Id")
                         .HasName("rewards_pkey");
 
-                    b.ToTable("rewards");
+                    b.ToTable("points_type");
                 });
 
             modelBuilder.Entity("CS301_Spend_Transactions.Models.Rule", b =>
@@ -144,9 +158,6 @@ namespace CS301_Spend_Transactions.Migrations
                         .HasColumnName("id")
                         .HasColumnType("int");
 
-                    b.Property<string>("CardId")
-                        .HasColumnType("varchar(767)");
-
                     b.Property<string>("CardType")
                         .HasColumnName("card_type")
                         .HasColumnType("text");
@@ -155,10 +166,29 @@ namespace CS301_Spend_Transactions.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("ForeignSpend")
+                        .HasColumnName("foreign_spend")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<decimal>("MaxSpend")
+                        .HasColumnName("max_spend")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("MinSpend")
+                        .HasColumnName("min_spend")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("Multiplier")
+                        .HasColumnName("multiplier")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("PointsTypeId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id")
                         .HasName("rules_pkey");
 
-                    b.HasIndex("CardId");
+                    b.HasIndex("PointsTypeId");
 
                     b.ToTable("rules");
 
@@ -235,48 +265,6 @@ namespace CS301_Spend_Transactions.Migrations
                     b.ToTable("users");
                 });
 
-            modelBuilder.Entity("CS301_Spend_Transactions.Models.CashbackCard", b =>
-                {
-                    b.HasBaseType("CS301_Spend_Transactions.Models.Card");
-
-                    b.HasDiscriminator().HasValue("CashbackCard");
-                });
-
-            modelBuilder.Entity("CS301_Spend_Transactions.Models.MilesCard", b =>
-                {
-                    b.HasBaseType("CS301_Spend_Transactions.Models.Card");
-
-                    b.HasDiscriminator().HasValue("MilesCard");
-                });
-
-            modelBuilder.Entity("CS301_Spend_Transactions.Models.PointCard", b =>
-                {
-                    b.HasBaseType("CS301_Spend_Transactions.Models.Card");
-
-                    b.HasDiscriminator().HasValue("PointCard");
-                });
-
-            modelBuilder.Entity("CS301_Spend_Transactions.Models.CashBack", b =>
-                {
-                    b.HasBaseType("CS301_Spend_Transactions.Models.Points");
-
-                    b.HasDiscriminator().HasValue("CashBack");
-                });
-
-            modelBuilder.Entity("CS301_Spend_Transactions.Models.Miles", b =>
-                {
-                    b.HasBaseType("CS301_Spend_Transactions.Models.Points");
-
-                    b.HasDiscriminator().HasValue("Miles");
-                });
-
-            modelBuilder.Entity("CS301_Spend_Transactions.Models.PointsPoint", b =>
-                {
-                    b.HasBaseType("CS301_Spend_Transactions.Models.Points");
-
-                    b.HasDiscriminator().HasValue("PointsPoint");
-                });
-
             modelBuilder.Entity("CS301_Spend_Transactions.Models.Campaign", b =>
                 {
                     b.HasBaseType("CS301_Spend_Transactions.Models.Rule");
@@ -289,20 +277,8 @@ namespace CS301_Spend_Transactions.Migrations
                         .HasColumnName("end_date")
                         .HasColumnType("datetime");
 
-                    b.Property<bool>("ForeignSpend")
-                        .HasColumnName("foreign_spend")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<decimal>("MaxSpend")
-                        .HasColumnName("max_spend")
-                        .HasColumnType("decimal(18, 2)");
-
                     b.Property<string>("MerchantName")
                         .HasColumnType("varchar(767)");
-
-                    b.Property<decimal>("MinSpend")
-                        .HasColumnName("min_spend")
-                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnName("start_date")
@@ -313,36 +289,9 @@ namespace CS301_Spend_Transactions.Migrations
                     b.HasDiscriminator().HasValue("Campaign");
                 });
 
-            modelBuilder.Entity("CS301_Spend_Transactions.Models.Exclusion", b =>
-                {
-                    b.HasBaseType("CS301_Spend_Transactions.Models.Rule");
-
-                    b.Property<int>("MCC")
-                        .HasColumnName("mcc")
-                        .HasColumnType("int");
-
-                    b.HasDiscriminator().HasValue("Exclusion");
-                });
-
             modelBuilder.Entity("CS301_Spend_Transactions.Models.Program", b =>
                 {
                     b.HasBaseType("CS301_Spend_Transactions.Models.Rule");
-
-                    b.Property<bool>("ForeignSpend")
-                        .HasColumnName("foreign_spend")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<decimal>("MaxSpend")
-                        .HasColumnName("max_spend")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<decimal>("MinSpend")
-                        .HasColumnName("min_spend")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<decimal>("Multiplier")
-                        .HasColumnName("multiplier")
-                        .HasColumnType("decimal(18, 2)");
 
                     b.HasDiscriminator().HasValue("Program");
                 });
@@ -357,6 +306,13 @@ namespace CS301_Spend_Transactions.Migrations
 
             modelBuilder.Entity("CS301_Spend_Transactions.Models.Points", b =>
                 {
+                    b.HasOne("CS301_Spend_Transactions.Models.PointsType", "PointsType")
+                        .WithMany("CreditedPoints")
+                        .HasForeignKey("PointsTypeId")
+                        .HasConstraintName("pointsType_point_fkey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("CS301_Spend_Transactions.Models.Transaction", "Transaction")
                         .WithMany("AccumulatedPoints")
                         .HasForeignKey("TransactionId")
@@ -365,9 +321,12 @@ namespace CS301_Spend_Transactions.Migrations
 
             modelBuilder.Entity("CS301_Spend_Transactions.Models.Rule", b =>
                 {
-                    b.HasOne("CS301_Spend_Transactions.Models.Card", null)
+                    b.HasOne("CS301_Spend_Transactions.Models.PointsType", "PointsType")
                         .WithMany("Rules")
-                        .HasForeignKey("CardId");
+                        .HasForeignKey("PointsTypeId")
+                        .HasConstraintName("pointsType_rule_fkey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("CS301_Spend_Transactions.Models.Transaction", b =>
