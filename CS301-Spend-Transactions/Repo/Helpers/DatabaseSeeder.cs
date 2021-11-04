@@ -59,7 +59,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                         Id = csvReader.GetField("id"),
                         FirstName = csvReader.GetField("first_name"),
                         LastName = csvReader.GetField("last_name"),
-                        PhoneNo = csvReader.GetField("phone_no"),
+                        PhoneNo = csvReader.GetField("phone"),
                         Email = csvReader.GetField("email"),
                         CreatedAt = DateTime.Now,
                         UpdatedAt = DateTime.Now,
