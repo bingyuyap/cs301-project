@@ -65,7 +65,14 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                         UpdatedAt = DateTime.Now,
                     };
 
-                    dbContext.Users.Add(record);
+                    try
+                    {
+                        dbContext.Users.Add(record);
+                    }
+                    catch (InvalidOperationException e)
+                    {
+                        _logger.LogInformation($"User {record.Id} already added");
+                    }
                 }
             }
             return await dbContext.SaveChangesAsync();
