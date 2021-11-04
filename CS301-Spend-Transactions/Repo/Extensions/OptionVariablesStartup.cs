@@ -15,7 +15,7 @@ namespace CS301_Spend_Transactions.Extensions
             var sqsConfig =  GetSqsOption(configuration, env);
             
             if (sqsConfig == null)
-                throw new InvalidDataException("Invalid rabbitMqConfig object received.");
+                throw new InvalidDataException("Invalid sqsConfig object received.");
             
             services.Configure<SQSOption>(options =>
             {
@@ -26,13 +26,16 @@ namespace CS301_Spend_Transactions.Extensions
 
         private static SQSOption GetSqsOption(IConfiguration configuration, IWebHostEnvironment env)
         {
-            var queueUrl = Environment.GetEnvironmentVariable("queueUrl");
-            var region = Environment.GetEnvironmentVariable("sqsRegion");
+            var queueUrl = Environment.GetEnvironmentVariable("QueueUrl");
+            var region = Environment.GetEnvironmentVariable("SQSRegion");
+            var accessKey = Environment.GetEnvironmentVariable("AWSAccessKey");
+            var secretKey = Environment.GetEnvironmentVariable("AWSSecretKey");
 
-            if (string.IsNullOrEmpty(queueUrl) || string.IsNullOrEmpty(region))
+            if (string.IsNullOrEmpty(queueUrl) || string.IsNullOrEmpty(region) || string.IsNullOrEmpty(accessKey) ||
+                string.IsNullOrEmpty(secretKey)) 
                 return null;
 
-            return new SQSOption(queueUrl, region);
+            return new SQSOption(queueUrl, region, accessKey, secretKey);
         }
     }
 }
