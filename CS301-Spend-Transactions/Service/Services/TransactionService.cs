@@ -12,6 +12,9 @@ using Microsoft.Extensions.Logging;
 
 namespace CS301_Spend_Transactions.Services
 {
+    /**
+     * Service that handles the insertion and relevant processing of transaction records
+     */
     public class TransactionService : ITransactionService
     {
         private readonly ILogger<TransactionService> _logger;
@@ -26,7 +29,7 @@ namespace CS301_Spend_Transactions.Services
         }
         
         /**
-         * Adds a transaction into the database, handling all the necessary checks
+         * Adds a transaction into the database, handling all the necessary checks and points earned
          */
         public Transaction AddTransaction(TransactionDTO transactionDto)
         {
@@ -49,8 +52,8 @@ namespace CS301_Spend_Transactions.Services
             }
             
             // 2-Find any exclusions 
-            var mcc = int.Parse(transactionDto.MCC);
-            var exclusions = dbContext.Exclusions.Where(exclusion => exclusion.MCC == mcc);
+            var exclusions = dbContext.Exclusions.Where(exclusion 
+                => exclusion.MCC == transactionDto.MCC);
 
             if (exclusions.Any())
             {
@@ -72,7 +75,7 @@ namespace CS301_Spend_Transactions.Services
             {
                 var points = new Points
                 {
-                    Amount = rule.GetReward(transaction.Amount),
+                    Amount = rule.GetReward(transaction.Amount), // TODO: Reward conversion based on currency?
                     ProcessedDate = DateTime.Now,
                     TransactionId = transaction.Id,
                     PointsTypeId = rule.PointsTypeId
