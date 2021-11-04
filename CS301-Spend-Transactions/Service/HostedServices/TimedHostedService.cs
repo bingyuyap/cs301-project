@@ -16,7 +16,7 @@ namespace CS301_Spend_Transactions.Service.HostedServices
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Queue Injection Hosted Service is running");
+            _logger.LogInformation("Timed Hosted Service is running");
             await DoWork(stoppingToken);
         }
         
@@ -24,13 +24,15 @@ namespace CS301_Spend_Transactions.Service.HostedServices
         {
             while (!stoppingToken.IsCancellationRequested)
                 _logger.LogInformation(
-                    "Consume Scoped Service Hosted Service is working.");
+                    "[TimedHostedService/DoWork] Starting an iteration");
+
+            await Task.Delay(5, stoppingToken);
         }
         
         public override async Task StopAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation(
-                "Consume Scoped Service Hosted Service is stopping.");
+                "Timed Hosted Service is stopping.");
 
             await base.StopAsync(stoppingToken);
         }
