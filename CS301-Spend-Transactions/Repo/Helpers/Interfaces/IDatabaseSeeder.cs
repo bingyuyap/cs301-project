@@ -11,6 +11,8 @@ namespace CS301_Spend_Transactions.Repo.Helpers.Interfaces
         Task<int> SeedTransactionEntries();
 
         Task<int> SeedGroupEntries();
+        
+        Task<int> SeedPointsTypeEntries();
 
         Task<int> SeedProgramEntries();
 
