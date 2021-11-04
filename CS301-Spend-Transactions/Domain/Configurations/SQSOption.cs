@@ -1,9 +1,9 @@
 namespace CS301_Spend_Transactions.Domain.Configurations
 {
-    public class SQSConfiguration
+    public class SQSOption
     {
-        public SQSConfiguration() {}
-        public SQSConfiguration(string queueUrl, string region)
+        public SQSOption() {}
+        public SQSOption(string queueUrl, string region)
         {
             QueueURL = queueUrl;
             Region = region;
