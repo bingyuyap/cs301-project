@@ -4,14 +4,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace CS301_Spend_Transactions.Service.HostedServices
 {
-    public class TimedHostedService : IHostedService
+    public class TimedHostedService : BackgroundService
     {
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             throw new System.NotImplementedException();
         }
