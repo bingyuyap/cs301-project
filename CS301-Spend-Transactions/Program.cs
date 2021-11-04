@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using CS301_Spend_Transactions.Service.HostedServices;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -42,6 +44,10 @@ namespace CS301_Spend_Transactions
                             loggerConfiguration.Enrich.WithProperty("DebuggerAttached", Debugger.IsAttached);
 #endif
                         });
+                })
+                .ConfigureServices((context, services) =>
+                {
+                    services.AddHostedService<TimedHostedService>();
                 });
     }
 }
