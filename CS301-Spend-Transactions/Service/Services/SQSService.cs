@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amazon.SQS;
 using Amazon.SQS.Model;
@@ -18,14 +19,16 @@ namespace CS301_Spend_Transactions.Services
             _sqsHelper = sqsHelper;
         }
 
-        public async void GetMessages()
+        public async Task<List<Message>> GetMessages()
         {
             var messages = await _sqsHelper.GetMessage();
 
             foreach (var message in messages)
             {
                 _logger.LogInformation(message.ToString());
-            }   
+            }
+
+            return messages;
         }
     }
 }
