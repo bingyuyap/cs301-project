@@ -54,7 +54,7 @@ namespace CS301_Spend_Transactions.Service.HostedServices
                     catch (InvalidTransactionException e)
                     {
                         _logger.LogCritical(
-                            $"[TimedHostedService/DoWork] Transaction {dto.TransactionId} failed due to {e.Message}");
+                            $"[TimedHostedService/DoWork] Transaction {dto.Transaction_Id} failed due to {e.Message}");
                     }
                 }
             }
