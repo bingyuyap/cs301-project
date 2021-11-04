@@ -36,6 +36,24 @@ namespace CS301_Spend_Transactions.Service.HostedServices
                     "[TimedHostedService/DoWork] Starting an iteration");
                 
                 var messages = await _sqsService.GetMessages();
+
+                var dtos = messages.Select(m =>
+                {
+                    return TransactionMapperHelper.ToTransactionDTO(m.Body);
+                });
+
+                foreach (var dto in dtos)
+                {
+                    try
+                    {
+                        _transactionService.AddTransaction(dto);
+                    }
+                    catch (InvalidTransactionException e)
+                    {
+                        _logger.LogCritical(
+                            $"[TimedHostedService/DoWork] Transaction {dto.TransactionId} failed due to {e.Message}");
+                    }
+                }
             }
                 
 
