@@ -34,6 +34,8 @@ namespace CS301_Spend_Transactions
         {   
             services.AddLogging();
             
+            services.AddOptionVariables(WebHostEnvironment, Configuration);
+
             services.AddDbContextInjections(WebHostEnvironment, Configuration);
             
             services.AddDataAccessInjections();
