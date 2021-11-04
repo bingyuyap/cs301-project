@@ -51,8 +51,8 @@ Add this file at root directory and below configurations
         "ASPNETCORE_ENVIRONMENT": "Development",
         "QueueUrl": <queue url>,
         "SQSRegion": <queue region>,
-        "AWSAccessKey": <access key>,
-        "AWSSecretKey": <secret key>
+        "AccessKey": <access key>,
+        "SecretKey": <secret key>
       }
     }
   }
