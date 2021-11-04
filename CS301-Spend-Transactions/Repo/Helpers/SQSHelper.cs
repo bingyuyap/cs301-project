@@ -2,16 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Amazon.Runtime;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using CS301_Spend_Transactions.Domain.Configurations;
+using CS301_Spend_Transactions.Repo.Helpers.Interfaces;
 using CS301_Spend_Transactions.Services;
 using Microsoft.Extensions.Options;
 using MySqlX.XDevAPI.Common;
 
 namespace CS301_Spend_Transactions.Repo.Helpers
 {
-    public class SQSHelper
+    public class SQSHelper : ISQSHelper
     {
         private readonly IAmazonSQS _sqs;
         private readonly SQSOption _option;
@@ -21,7 +23,9 @@ namespace CS301_Spend_Transactions.Repo.Helpers
         {
             _sqs = sqs;
             _option = option.Value;
-            _amazonSqsClient = new AmazonSQSClient();
+            _amazonSqsClient = new AmazonSQSClient(
+                new BasicAWSCredentials(_option.AccessKey, _option.SecretKey)
+            ); 
         }
 
         public async Task<List<Message>> GetMessage()
