@@ -71,6 +71,34 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             return await dbContext.SaveChangesAsync();
         }
         
+        public async Task<int> SeedCardEntries()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/users.csv"))
+            {
+                CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
+                csvReader.Read();
+                csvReader.ReadHeader();
+                
+                while (csvReader.Read())
+                {
+                    var record = new Card
+                    {
+                        Id = csvReader.GetField("card_id"),
+                        UserId = csvReader.GetField("id"),
+                        CardPan = csvReader.GetField("card_pan"),
+                        CardType = csvReader.GetField("card_pan")
+                    };
+
+                    dbContext.Cards.Add(record);
+                }
+            }
+
+            return await dbContext.SaveChangesAsync();
+        }
+        
         public async Task<int> SeedDummyCardEntries()
         {
             using var scope = _scopeFactory.CreateScope();
