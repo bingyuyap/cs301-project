@@ -41,6 +41,7 @@ namespace CS301_Spend_Transactions.Services
             // 1-Validate transaction
             if (transaction.Amount < 0)
             {
+                _logger.LogCritical("Amount is negative");
                 throw new InvalidTransactionException("Transaction cannot have a negative amount");
             }
             
@@ -48,6 +49,7 @@ namespace CS301_Spend_Transactions.Services
 
             if (card is null)
             {
+                _logger.LogCritical("Card not found");
                 throw new InvalidTransactionException("Invalid card ID in transaction record");
             }
             
@@ -65,7 +67,7 @@ namespace CS301_Spend_Transactions.Services
             // 3-Check for all rules that apply, and create points
             var foreignSpend = (!transactionDto.Currency.Equals("SGD"));
             var rules = dbContext.Rules.Where(rule =>
-                rule.CardType == transactionDto.CardType
+                rule.CardType == transactionDto.Card_Type
                     && rule.MinSpend < transactionDto.Amount
                     && rule.MaxSpend > transactionDto.Amount
                     && rule.ForeignSpend == foreignSpend    
