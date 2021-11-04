@@ -20,11 +20,11 @@ namespace CS301_Spend_Transactions.Repo.Helpers
         {
             return new Transaction
             {
-                Id = transactionDTO.TransactionId,
-                TransactionDate = transactionDTO.TransactionDate,
+                Id = transactionDTO.Transaction_Id,
+                TransactionDate = transactionDTO.Transaction_Date,
                 Currency = transactionDTO.Currency,
                 Amount = transactionDTO.Amount,
-                CardId = transactionDTO.CardId,
+                CardId = transactionDTO.Card_Id,
                 MerchantName = transactionDTO.Merchant
             };
         }
