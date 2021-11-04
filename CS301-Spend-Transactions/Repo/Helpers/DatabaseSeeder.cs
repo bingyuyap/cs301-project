@@ -139,6 +139,31 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             return await dbContext.SaveChangesAsync();
         }
         
+        public async Task<int> SeedPointsTypeEntries()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            
+            using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/PointsType.csv"))
+            {
+                CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
+                csvReader.Read();
+                csvReader.ReadHeader();
+                while (csvReader.Read())
+                {
+                    var record = new PointsType()
+                    {
+                        Id = csvReader.GetField<int>("Id"),
+                        Description = csvReader.GetField("Description"), 
+                        Unit = csvReader.GetField("Unit"),
+                    };
+                    dbContext.PointsTypes.Add(record);
+                }
+            }
+            
+            return await dbContext.SaveChangesAsync();
+        }
+        
         public async Task<int> SeedProgramEntries()
         {
             using var scope = _scopeFactory.CreateScope();
