@@ -21,6 +21,8 @@ namespace CS301_Spend_Transactions.Extensions
             {
                 options.QueueURL = sqsConfig.QueueURL;
                 options.Region = sqsConfig.Region;
+                options.AccessKey = sqsConfig.AccessKey;
+                options.SecretKey = sqsConfig.SecretKey;
             });
         }
 
@@ -28,8 +30,8 @@ namespace CS301_Spend_Transactions.Extensions
         {
             var queueUrl = Environment.GetEnvironmentVariable("QueueUrl");
             var region = Environment.GetEnvironmentVariable("SQSRegion");
-            var accessKey = Environment.GetEnvironmentVariable("AWSAccessKey");
-            var secretKey = Environment.GetEnvironmentVariable("AWSSecretKey");
+            var accessKey = Environment.GetEnvironmentVariable("AccessKey");
+            var secretKey = Environment.GetEnvironmentVariable("SecretKey");
 
             if (string.IsNullOrEmpty(queueUrl) || string.IsNullOrEmpty(region) || string.IsNullOrEmpty(accessKey) ||
                 string.IsNullOrEmpty(secretKey)) 
