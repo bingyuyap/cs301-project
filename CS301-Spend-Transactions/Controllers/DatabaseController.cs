@@ -23,6 +23,7 @@ namespace CS301_Spend_Transactions.Controllers
             await _databaseSeeder.SeedCardEntries();
             await _databaseSeeder.SeedMerchantEntries();
             await _databaseSeeder.SeedGroupEntries();
+            await _databaseSeeder.SeedPointsTypeEntries();
             await _databaseSeeder.SeedProgramEntries();
             await _databaseSeeder.SeedTransactionEntries();
         }
