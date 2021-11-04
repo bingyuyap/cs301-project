@@ -30,7 +30,10 @@ namespace CS301_Spend_Transactions.Services
             // Using LINQ expressions here
             return dbContext.Users.First(user => user.Id == Id);
         }
-
+        
+        /**
+         * Adds new User and Card objects into the database based on a UserDTO
+         */
         public User AddUser(UserDTO userDto)
         {
             using var scope = _scopeFactory.CreateScope();
@@ -39,7 +42,11 @@ namespace CS301_Spend_Transactions.Services
             var user = UserMapperHelper.ToUser(userDto);
             var card = UserMapperHelper.ToCard(userDto);
 
-            dbContext.Users.Add(user);
+            if (dbContext.Users.Find(user.Id) is null)
+            {
+                dbContext.Users.Add(user);    
+            }
+            
             dbContext.Cards.Add(card);
             
             dbContext.SaveChanges();
