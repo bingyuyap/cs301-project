@@ -39,6 +39,12 @@ namespace CS301_Spend_Transactions.Controllers
         {
             await _databaseSeeder.SeedCardEntries();
         }
+        
+        [HttpGet("/api/Database/SeedUsersAndCards")]
+        public async void SeedUsersAndCards()
+        {
+            await _databaseSeeder.SeedUserAndCardEntries();
+        }
 
         [HttpGet("/api/Database/SeedTransactions")]
         public async void SeedTransactions()
