@@ -5,8 +5,10 @@ namespace CS301_Spend_Transactions.Repo.Helpers.Interfaces
     public interface IDatabaseSeeder
     {
         Task<int> SeedUserEntries();
+        Task<int> SeedDummyUserEntries();
 
         Task<int> SeedCardEntries();
+        Task<int> SeedDummyCardEntries();
         
         Task<int> SeedTransactionEntries();
 
