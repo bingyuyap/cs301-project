@@ -56,7 +56,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                 {
                     var record = new User
                     {
-                        Id = csvReader.GetField("Id"),
+                        Id = csvReader.GetField("id"),
                         FirstName = csvReader.GetField("first_name"),
                         LastName = csvReader.GetField("last_name"),
                         PhoneNo = csvReader.GetField("phone_no"),
