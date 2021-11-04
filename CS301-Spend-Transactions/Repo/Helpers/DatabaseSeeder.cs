@@ -26,7 +26,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             _logger = logger;
         }
 
-        public async Task<int> SeedUserEntries()
+        public async Task<int> SeedDummyUserEntries()
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -41,7 +41,37 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             }
         }
         
-        public async Task<int> SeedCardEntries()
+        public async Task<int> SeedUserEntries()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            
+            using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/users.csv"))
+            {
+                CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
+                csvReader.Read();
+                csvReader.ReadHeader();
+                
+                while (csvReader.Read())
+                {
+                    var record = new User
+                    {
+                        Id = csvReader.GetField("Id"),
+                        FirstName = csvReader.GetField("first_name"),
+                        LastName = csvReader.GetField("last_name"),
+                        PhoneNo = csvReader.GetField("phone_no"),
+                        Email = csvReader.GetField("email"),
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now,
+                    };
+
+                    dbContext.Users.Add(record);
+                }
+            }
+            return await dbContext.SaveChangesAsync();
+        }
+        
+        public async Task<int> SeedDummyCardEntries()
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
