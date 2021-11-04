@@ -78,6 +78,53 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             return await dbContext.SaveChangesAsync();
         }
         
+        public async Task<int> SeedUserAndCardEntries()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            
+            using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/users.csv"))
+            {
+                CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
+                csvReader.Read();
+                csvReader.ReadHeader();
+                
+                while (csvReader.Read())
+                {
+                    var userRecord = new User
+                    {
+                        Id = csvReader.GetField("id"),
+                        FirstName = csvReader.GetField("first_name"),
+                        LastName = csvReader.GetField("last_name"),
+                        PhoneNo = csvReader.GetField("phone"),
+                        Email = csvReader.GetField("email"),
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now,
+                    };
+
+                    try
+                    {
+                        dbContext.Users.Add(userRecord);
+                    }
+                    catch (InvalidOperationException e)
+                    {
+                        _logger.LogInformation($"User {userRecord.Id} already added");
+                    }
+                    
+                    var cardRecord = new Card
+                    {
+                        Id = csvReader.GetField("card_id"),
+                        UserId = csvReader.GetField("id"),
+                        CardPan = csvReader.GetField("card_pan"),
+                        CardType = csvReader.GetField("card_pan")
+                    };
+
+                    dbContext.Cards.Add(cardRecord);
+                }
+            }
+            return await dbContext.SaveChangesAsync();
+        }
+        
         public async Task<int> SeedCardEntries()
         {
             using var scope = _scopeFactory.CreateScope();

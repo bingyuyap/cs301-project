@@ -9,6 +9,8 @@ namespace CS301_Spend_Transactions.Repo.Helpers.Interfaces
 
         Task<int> SeedCardEntries();
         Task<int> SeedDummyCardEntries();
+
+        Task<int> SeedUserAndCardEntries();
         
         Task<int> SeedTransactionEntries();
 
