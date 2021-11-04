@@ -15,13 +15,11 @@ namespace CS301_Spend_Transactions.Repo.Helpers
 {
     public class SQSHelper : ISQSHelper
     {
-        private readonly IAmazonSQS _sqs;
-        private readonly SQSOption _option;
+        private readonly SQSOption _option;1
         private AmazonSQSClient _amazonSqsClient;
 
         public SQSHelper(IAmazonSQS sqs, IOptions<SQSOption> option)
         {
-            _sqs = sqs;
             _option = option.Value;
             _amazonSqsClient = new AmazonSQSClient(
                 new BasicAWSCredentials(_option.AccessKey, _option.SecretKey)
@@ -34,8 +32,8 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             {
                 MaxNumberOfMessages = 10,
                 QueueUrl = _option.QueueURL,
-                VisibilityTimeout = (int)TimeSpan.FromMinutes(10).TotalSeconds,
-                WaitTimeSeconds = (int)TimeSpan.FromSeconds(5).TotalSeconds
+                // VisibilityTimeout = (int)TimeSpan.FromMinutes(10).TotalSeconds,
+                // WaitTimeSeconds = (int)TimeSpan.FromSeconds(5).TotalSeconds
             };
             
             var response = await _amazonSqsClient.ReceiveMessageAsync(request);
