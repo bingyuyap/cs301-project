@@ -44,10 +44,11 @@ namespace CS301_Spend_Transactions
                             loggerConfiguration.Enrich.WithProperty("DebuggerAttached", Debugger.IsAttached);
 #endif
                         });
-                })
-                .ConfigureServices(services =>
-                {
-                    services.AddHostedService<TimedHostedService>();
                 });
+        // Comment this out to prevent Hosted Service from starting
+        // .ConfigureServices(services =>
+        // {
+        //     services.AddHostedService<TimedHostedService>();
+        // });
     }
 }
