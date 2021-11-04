@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using CS301_Spend_Transactions.Domain.Configurations;
 using CS301_Spend_Transactions.Services;
 using Microsoft.Extensions.Options;
+using MySqlX.XDevAPI.Common;
 
 namespace CS301_Spend_Transactions.Repo.Helpers
 {
@@ -21,7 +24,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             _amazonSqsClient = new AmazonSQSClient();
         }
 
-        public Task<ReceiveMessageResponse> GetMessage()
+        public async Task<List<Message>> GetMessage()
         {
             var request = new ReceiveMessageRequest
             {
@@ -31,7 +34,10 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                 WaitTimeSeconds = (int)TimeSpan.FromSeconds(5).TotalSeconds
             };
             
-            return _amazonSqsClient.ReceiveMessageAsync(request);
+            var response = await _amazonSqsClient.ReceiveMessageAsync(request);
+            var messages = response.Messages.Any() ? response.Messages : new List<Message>();
+
+            return messages;
         }
     }
 }
