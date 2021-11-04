@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using CS301_Spend_Transactions.Models;
 using CS301_Spend_Transactions.Repo.Helpers.Interfaces;
@@ -156,7 +157,9 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                         Multiplier = csvReader.GetField<decimal>("Earn"),
                         MinSpend = csvReader.GetField<int>("MinSpend"),
                         MaxSpend = csvReader.GetField<int>("MaxSpend"),
-                        ForeignSpend = csvReader.GetField<bool>("Foreign")
+                        ForeignSpend = csvReader.GetField<bool>("Foreign"),
+                        PointsTypeId = dbContext.PointsTypes.First(
+                            p => p.Unit == csvReader.GetField("PointsType")).Id
                     };
 
                     dbContext.Rules.Add(record);
