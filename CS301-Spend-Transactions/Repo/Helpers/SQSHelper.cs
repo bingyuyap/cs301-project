@@ -23,7 +23,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             _option = option.Value;
             _amazonSqsClient = new AmazonSQSClient(
                 new BasicAWSCredentials(_option.AccessKey, _option.SecretKey)
-            ); 
+            );
         }
 
         public async Task<List<Message>> GetMessage()
@@ -35,11 +35,22 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                 // VisibilityTimeout = (int)TimeSpan.FromMinutes(10).TotalSeconds,
                 // WaitTimeSeconds = (int)TimeSpan.FromSeconds(5).TotalSeconds
             };
-            
+
             var response = await _amazonSqsClient.ReceiveMessageAsync(request);
             var messages = response.Messages.Any() ? response.Messages : new List<Message>();
 
+            // await DeleteMessages(messages);
+
             return messages;
+        }
+
+        public async Task DeleteMessages(List<Message> messages)
+        {
+            foreach (var message in messages)
+            {
+                await _amazonSqsClient.DeleteMessageAsync(new DeleteMessageRequest(_option.QueueURL,
+                    message.ReceiptHandle));
+            }
         }
     }
 }
