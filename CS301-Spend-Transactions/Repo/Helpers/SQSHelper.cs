@@ -15,7 +15,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
 {
     public class SQSHelper : ISQSHelper
     {
-        private readonly SQSOption _option;1
+        private readonly SQSOption _option;
         private AmazonSQSClient _amazonSqsClient;
 
         public SQSHelper(IAmazonSQS sqs, IOptions<SQSOption> option)

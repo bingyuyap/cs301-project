@@ -29,7 +29,8 @@ namespace CS301_Spend_Transactions
                 {
                     webBuilder
                         .UseStartup<Startup>()
-                        .UseSerilog((hostingContext, loggerConfiguration) => {
+                        .UseSerilog((hostingContext, loggerConfiguration) =>
+                        {
                             loggerConfiguration
                                 .ReadFrom.Configuration(hostingContext.Configuration)
                                 .Enrich.FromLogContext()
