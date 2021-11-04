@@ -36,3 +36,4 @@ Desktop.ini
 # app settings which includes database url and password
 appsettings.Development.json
 appsettings.json
+launchSettings.json

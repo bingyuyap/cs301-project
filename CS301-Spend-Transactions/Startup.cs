@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CS301_Spend_Transactions.Extensions;
+using CS301_Spend_Transactions.Service.HostedServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -33,11 +34,15 @@ namespace CS301_Spend_Transactions
         {   
             services.AddLogging();
             
+            services.AddOptionVariables(WebHostEnvironment, Configuration);
+
             services.AddDbContextInjections(WebHostEnvironment, Configuration);
             
             services.AddDataAccessInjections();
 
             services.AddControllers();
+
+            // services.AddHostedService<TimedHostedService>();
 
             // TODO: Configure and initialize DB context
         }

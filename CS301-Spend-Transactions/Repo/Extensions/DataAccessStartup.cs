@@ -1,3 +1,4 @@
+using Amazon.SQS;
 using CS301_Spend_Transactions.Models;
 using CS301_Spend_Transactions.Repo.Helpers;
 using CS301_Spend_Transactions.Repo.Helpers.Interfaces;
@@ -18,8 +19,12 @@ namespace CS301_Spend_Transactions.Extensions
             services.AddTransient<IRuleService, RuleService>();
             services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ISQSService, SQSService>();
             
             services.AddTransient<IDatabaseSeeder, DatabaseSeeder>();
+            
+            services.AddSingleton<ISQSHelper, SQSHelper>();
+            services.AddAWSService<IAmazonSQS>();
 
         }
     }
