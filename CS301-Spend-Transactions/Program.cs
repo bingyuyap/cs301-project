@@ -45,7 +45,7 @@ namespace CS301_Spend_Transactions
 #endif
                         });
                 })
-                .ConfigureServices((context, services) =>
+                .ConfigureServices(services =>
                 {
                     services.AddHostedService<TimedHostedService>();
                 });
