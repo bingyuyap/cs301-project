@@ -1,6 +1,8 @@
 using System.Data;
 using System.Linq;
+using CS301_Spend_Transactions.Domain.DTO;
 using CS301_Spend_Transactions.Models;
+using CS301_Spend_Transactions.Repo.Helpers;
 using CS301_Spend_Transactions.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -29,14 +31,18 @@ namespace CS301_Spend_Transactions.Services
             return dbContext.Users.First(user => user.Id == Id);
         }
 
-        public User AddUser(User user)
+        public User AddUser(UserDTO userDto)
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-            dbContext.Add(user);
-            dbContext.SaveChanges();
+            var user = UserMapperHelper.ToUser(userDto);
+            var card = UserMapperHelper.ToCard(userDto);
 
+            dbContext.Users.Add(user);
+            dbContext.Cards.Add(card);
+            
+            dbContext.SaveChanges();
             return user;
         }
     }
