@@ -36,16 +36,19 @@ namespace CS301_Spend_Transactions.Service.HostedServices
                     "[TimedHostedService/DoWork] Starting an iteration");
                 
                 var messages = await _sqsService.GetMessages();
+                _logger.LogInformation($"Consumed {messages.Count} messages from SQS");
 
                 var dtos = messages.Select(m =>
                 {
                     return TransactionMapperHelper.ToTransactionDTO(m.Body);
                 });
+                _logger.LogInformation($"Converted {dtos.Count()} messages to DTO");
 
                 foreach (var dto in dtos)
                 {
                     try
                     {
+                        _logger.LogInformation(dto.ToString());
                         _transactionService.AddTransaction(dto);
                     }
                     catch (InvalidTransactionException e)
