@@ -45,15 +45,19 @@ namespace CS301_Spend_Transactions.Services
                 throw new InvalidTransactionException("Transaction cannot have a negative amount");
             }
             
-            var card = dbContext.Cards.Find(transaction.CardId);
-
-            if (card is null)
+            if (dbContext.Cards.Find(transaction.CardId) is null)
             {
                 _logger.LogCritical("Card not found");
                 throw new InvalidTransactionException("Invalid card ID in transaction record");
             }
+
+            if (dbContext.Transactions.Find(transaction.Id) != null)
+            {
+                _logger.LogCritical("Transaction exists within the database");
+                throw new InvalidTransactionException("Transaction has already been processed");
+            } 
             
-            // 2-Find any exclusions 
+            // 2-Find any exclusions. If an exclusion applies, no points are earned
             var exclusions = dbContext.Exclusions.Where(exclusion 
                 => exclusion.MCC == transactionDto.MCC);
 
@@ -64,29 +68,81 @@ namespace CS301_Spend_Transactions.Services
                 return transaction;
             }
             
-            // 3-Check for all rules that apply, and create points
+            // 3-Check for points earned through card program
             var foreignSpend = (!transactionDto.Currency.Equals("SGD"));
-            var rules = dbContext.Rules.Where(rule =>
-                rule.CardType == transactionDto.Card_Type
-                    && rule.MinSpend < transactionDto.Amount
-                    && rule.MaxSpend > transactionDto.Amount
-                    && rule.ForeignSpend == foreignSpend    
+            
+            // Check for special program rules based on MCC 
+            var programs = dbContext.Programs.Where(program =>
+                    program.CardType == transactionDto.Card_Type
+                    && program.MinSpend <= transactionDto.Amount
+                    && program.MaxSpend > transactionDto.Amount
+                    && program.ForeignSpend == foreignSpend    
+                    && program.MCC == transactionDto.MCC
             );
 
-            foreach (var rule in rules)
+            // Otherwise, use base rule
+            if (!programs.Any())
+            {
+                programs = dbContext.Programs.Where(program =>
+                    program.CardType == transactionDto.Card_Type
+                    && program.MinSpend <= transactionDto.Amount
+                    && program.MaxSpend > transactionDto.Amount
+                    && program.ForeignSpend == foreignSpend
+                    && program.MCC == -1
+                );
+            }
+            
+            foreach (var program in programs)
             {
                 var points = new Points
                 {
-                    Amount = rule.GetReward(transaction.Amount), // TODO: Reward conversion based on currency?
+                    Amount = program.GetReward(transaction.Amount),
                     ProcessedDate = DateTime.Now,
                     TransactionId = transaction.Id,
-                    PointsTypeId = rule.PointsTypeId
+                    PointsTypeId = program.PointsTypeId
                 };
+                
+                // Handle foreign currency conversion
+                if (foreignSpend)
+                {
+                    points.Amount = CurrencyConverter.ConvertToSgd(transactionDto.Currency, points.Amount);
+                }
+                
+                dbContext.Points.Add(points);
+            }
 
+            
+            // 4-Check for points earned through campaigns
+            var campaigns = dbContext.Campaigns.Where(campaign =>
+                campaign.CardType == transactionDto.Card_Type
+                && campaign.MerchantName == transactionDto.Merchant
+                && campaign.MinSpend <= transactionDto.Amount
+                && campaign.MaxSpend > transactionDto.Amount
+                && campaign.ForeignSpend == foreignSpend
+                && campaign.StartDate < DateTime.Now
+                && campaign.EndDate > DateTime.Now
+            );
+            
+            foreach (var campaign in campaigns)
+            {
+                var points = new Points
+                {
+                    Amount = campaign.GetReward(transaction.Amount),
+                    ProcessedDate = DateTime.Now,
+                    TransactionId = transaction.Id,
+                    PointsTypeId = campaign.PointsTypeId
+                };
+                
+                // Handle foreign currency conversion
+                if (foreignSpend)
+                {
+                    points.Amount = CurrencyConverter.ConvertToSgd(transactionDto.Currency, points.Amount);
+                }
+                
                 dbContext.Points.Add(points);
             }
             
-            // 4-Save changes to db
+            // 5-Save changes to db
             dbContext.Transactions.Add(transaction);
             dbContext.SaveChanges();
             return transaction;

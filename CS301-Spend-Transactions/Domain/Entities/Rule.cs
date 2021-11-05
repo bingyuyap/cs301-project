@@ -34,6 +34,8 @@ namespace CS301_Spend_Transactions.Models
      */
     public class Program : Rule
     {
+        public int MCC { get; set; }
+        
         public override decimal GetReward(decimal amount)
         {
             return Multiplier * amount;
