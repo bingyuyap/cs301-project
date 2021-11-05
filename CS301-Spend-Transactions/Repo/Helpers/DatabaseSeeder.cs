@@ -301,8 +301,8 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                         CardType = csvReader.GetField("CardType"),
                         Multiplier = csvReader.GetField<decimal>("Multiplier"),
                         MCC = csvReader.GetField<int>("MCC"),
-                        MinSpend = csvReader.GetField<int>("MinSpend"),
-                        MaxSpend = csvReader.GetField<int>("MaxSpend"),
+                        MinSpend = csvReader.GetField<decimal>("MinSpend"),
+                        MaxSpend = csvReader.GetField<decimal>("MaxSpend"),
                         ForeignSpend = csvReader.GetField<bool>("Foreign"),
                         PointsTypeId = csvReader.GetField<int>("PointsTypeId")
                     };
@@ -358,6 +358,38 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                     };
 
                     dbContext.Exclusions.Add(record);
+                }
+            }
+
+            return await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<int> SeedCampaignEntries()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/Campaigns.csv"))
+            {
+                CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
+                csvReader.Read();
+                csvReader.ReadHeader();
+                while (csvReader.Read())
+                {
+                    var record = new Campaign()
+                    {
+                        CardType = csvReader.GetField("CardType"),
+                        MinSpend = csvReader.GetField<decimal>("MinSpend"),
+                        MaxSpend = csvReader.GetField<decimal>("MaxSpend"),
+                        ForeignSpend = csvReader.GetField<bool>("ForeignSpend"),
+                        Multiplier = csvReader.GetField<decimal>("Multiplier"),
+                        StartDate = csvReader.GetField<DateTime>("StartDate"),
+                        EndDate = csvReader.GetField<DateTime>("EndDate"),
+                        Description = csvReader.GetField("Description"),
+                        MerchantName = csvReader.GetField("MerchantName"),
+                        PointsTypeId = csvReader.GetField<int>("PointsTypeId")
+                    };
+                    dbContext.Campaigns.Add(record);
                 }
             }
 
