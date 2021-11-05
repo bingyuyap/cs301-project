@@ -27,6 +27,9 @@ namespace CS301_Spend_Transactions.Controllers
             await _databaseSeeder.SeedGroupEntries();
             await _databaseSeeder.SeedPointsTypeEntries();
             await _databaseSeeder.SeedProgramEntries();
+            await _databaseSeeder.SeedExclusionEntries();
+            await _databaseSeeder.SeedCampaignEntries();
+            await _databaseSeeder.SeedProgramEntries();
             await _databaseSeeder.SeedTransactionEntries();
         }
 
@@ -64,6 +67,18 @@ namespace CS301_Spend_Transactions.Controllers
         public async void SeedPrograms()
         {
             await _databaseSeeder.SeedProgramEntries();
+        }
+        
+        [HttpGet("/api/Database/SeedCampaigns")]
+        public async void SeedCampaigns()
+        {
+            await _databaseSeeder.SeedCampaignEntries();
+        }
+        
+        [HttpGet("/api/Database/SeedExclusions")]
+        public async void SeedExclusions()
+        {
+            await _databaseSeeder.SeedExclusionEntries();
         }
         
         [HttpGet("/api/Database/SeedMerchants")]
