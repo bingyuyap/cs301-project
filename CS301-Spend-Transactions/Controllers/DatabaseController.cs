@@ -19,8 +19,10 @@ namespace CS301_Spend_Transactions.Controllers
         [HttpGet("/api/Database/InitialSeed")]
         public async void InitialSeed()
         {
-            await _databaseSeeder.SeedUserEntries();
-            await _databaseSeeder.SeedCardEntries();
+            // commented out because this is too slow via seeding
+            // import csv to database instead
+            // await _databaseSeeder.SeedUserEntries();
+            // await _databaseSeeder.SeedCardEntries();
             await _databaseSeeder.SeedMerchantEntries();
             await _databaseSeeder.SeedGroupEntries();
             await _databaseSeeder.SeedPointsTypeEntries();
