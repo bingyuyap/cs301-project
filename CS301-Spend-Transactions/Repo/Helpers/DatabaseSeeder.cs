@@ -30,28 +30,28 @@ namespace CS301_Spend_Transactions.Repo.Helpers
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            
+
             using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/DummyUsers.csv"))
             {
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
                 var users = csvReader.GetRecords<User>();
-                
+
                 dbContext.Users.AddRange(users);
                 return await dbContext.SaveChangesAsync();
             }
         }
-        
+
         public async Task<int> SeedUserEntries()
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            
+
             using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/users.csv"))
             {
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
                 csvReader.Read();
                 csvReader.ReadHeader();
-                
+
                 while (csvReader.Read())
                 {
                     var record = new User
@@ -75,22 +75,26 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                     }
                 }
             }
+
             return await dbContext.SaveChangesAsync();
         }
-        
+
         public async Task<int> SeedUserAndCardEntries()
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            
+
+            int i = 0;
+
             using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/users.csv"))
             {
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
                 csvReader.Read();
                 csvReader.ReadHeader();
-                
+
                 while (csvReader.Read())
                 {
+                    i++;
                     var userRecord = new User
                     {
                         Id = csvReader.GetField("id"),
@@ -102,29 +106,33 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                         UpdatedAt = DateTime.Now,
                     };
 
-                    try
+                    if (dbContext.Users.Find(csvReader.GetField("id")) is null)
                     {
                         dbContext.Users.Add(userRecord);
+                        dbContext.SaveChanges();
                     }
-                    catch (InvalidOperationException e)
-                    {
-                        _logger.LogInformation($"User {userRecord.Id} already added");
-                    }
-                    
+
                     var cardRecord = new Card
                     {
                         Id = csvReader.GetField("card_id"),
                         UserId = csvReader.GetField("id"),
                         CardPan = csvReader.GetField("card_pan"),
-                        CardType = csvReader.GetField("card_pan")
+                        CardType = csvReader.GetField("card_pan"),
+                        User = dbContext.Users.Find(csvReader.GetField("id"))
                     };
 
+
                     dbContext.Cards.Add(cardRecord);
+                    _logger.LogInformation($"Card {cardRecord.Id} added");
+
+                    _logger.LogInformation($"Read row {i}");
+                    await dbContext.SaveChangesAsync();
                 }
             }
-            return await dbContext.SaveChangesAsync();
+
+            return 0;
         }
-        
+
         public async Task<int> SeedCardEntries()
         {
             using var scope = _scopeFactory.CreateScope();
@@ -135,7 +143,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
                 csvReader.Read();
                 csvReader.ReadHeader();
-                
+
                 while (csvReader.Read())
                 {
                     var record = new Card
@@ -152,7 +160,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
 
             return await dbContext.SaveChangesAsync();
         }
-        
+
         public async Task<int> SeedDummyCardEntries()
         {
             using var scope = _scopeFactory.CreateScope();
@@ -163,7 +171,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
                 csvReader.Read();
                 csvReader.ReadHeader();
-                
+
                 while (csvReader.Read())
                 {
                     var record = new Card
@@ -187,13 +195,13 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var cardService = scope.ServiceProvider.GetRequiredService<ICardService>();
             var ruleService = scope.ServiceProvider.GetRequiredService<IRuleService>();
-            
+
             using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/DummyTransactions.csv"))
             {
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
                 csvReader.Read();
                 csvReader.ReadHeader();
-                
+
                 while (csvReader.Read())
                 {
                     var record = new Transaction
@@ -208,7 +216,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
 
                     Card card = cardService.GetCardById(record.CardId);
                     Rule rule = ruleService.GetRule(card, record);
-                    
+
 
                     var point = new Points
                     {
@@ -222,7 +230,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                     dbContext.Points.Add(point);
                 }
             }
-            
+
             return await dbContext.SaveChangesAsync();
         }
 
@@ -230,7 +238,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            
+
             using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/Groups.csv"))
             {
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
@@ -241,21 +249,21 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                     var record = new Groups
                     {
                         MinMCC = csvReader.GetField<int>("MinMCC"),
-                        MaxMCC = csvReader.GetField<int>("MaxMCC"), 
+                        MaxMCC = csvReader.GetField<int>("MaxMCC"),
                         Name = csvReader.GetField("Name"),
                     };
                     dbContext.Groups.Add(record);
                 }
             }
-            
+
             return await dbContext.SaveChangesAsync();
         }
-        
+
         public async Task<int> SeedPointsTypeEntries()
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            
+
             using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/PointsType.csv"))
             {
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
@@ -266,21 +274,21 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                     var record = new PointsType()
                     {
                         Id = csvReader.GetField<int>("Id"),
-                        Description = csvReader.GetField("Description"), 
+                        Description = csvReader.GetField("Description"),
                         Unit = csvReader.GetField("Unit"),
                     };
                     dbContext.PointsTypes.Add(record);
                 }
             }
-            
+
             return await dbContext.SaveChangesAsync();
         }
-        
+
         public async Task<int> SeedProgramEntries()
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            
+
             using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/Programs.csv"))
             {
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
@@ -302,15 +310,15 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                     dbContext.Rules.Add(record);
                 }
             }
-            
+
             return await dbContext.SaveChangesAsync();
         }
-        
+
         public async Task<int> SeedMerchantEntries()
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            
+
             using (TextReader fileReader = File.OpenText("Repo/Helpers/Seeds/Merchants.csv"))
             {
                 CsvReader csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
@@ -327,9 +335,8 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                     dbContext.Merchants.Add(record);
                 }
             }
-            
+
             return await dbContext.SaveChangesAsync();
         }
-
     }
 }
