@@ -20,6 +20,10 @@ namespace CS301_Spend_Transactions.Repo.Helpers.Interfaces
 
         Task<int> SeedProgramEntries();
 
+        Task<int> SeedExclusionEntries();
+
+        Task<int> SeedCampaignEntries();
+
         Task<int> SeedMerchantEntries();
     }
 }
