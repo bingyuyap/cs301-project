@@ -11,27 +11,20 @@ namespace CS301_Spend_Transactions.Repo.Helpers
 {
     public static class TransactionMapperHelper
     {
-        public static TransactionDTO ToTransactionDTO(String body)
+        public static TransactionDTO ToTransactionDTO(string body)
         {
             return JsonConvert.DeserializeObject<TransactionDTO>(body);
         }
 
-        public static Transaction ToTransaction(String body)
-        {
-            var transactionDTO = ToTransactionDTO(body);
-
-            return ToTransaction(transactionDTO);
-        }
-
         public static Transaction ToTransaction(TransactionDTO transactionDTO)
         {
-            return new Transaction()
+            return new Transaction
             {
-                Id = transactionDTO.Id,
-                TransactionDate = transactionDTO.TransactionDate,
+                Id = transactionDTO.Transaction_Id,
+                TransactionDate = transactionDTO.Transaction_Date,
                 Currency = transactionDTO.Currency,
                 Amount = transactionDTO.Amount,
-                CardId = transactionDTO.CardId,
+                CardId = transactionDTO.Card_Id,
                 MerchantName = transactionDTO.Merchant
             };
         }

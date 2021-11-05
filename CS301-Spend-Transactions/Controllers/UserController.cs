@@ -1,4 +1,5 @@
 using CS301_Spend_Transactions.Controllers.Interfaces;
+using CS301_Spend_Transactions.Domain.DTO;
 using CS301_Spend_Transactions.Models;
 using CS301_Spend_Transactions.Repo.Helpers;
 using CS301_Spend_Transactions.Repo.Helpers.Interfaces;
@@ -24,9 +25,9 @@ namespace CS301_Spend_Transactions.Controllers
         }
         
         [HttpPost("/api/User/AddUser")]
-        public User AddUser(User user)
+        public User AddUser(UserDTO userDto)
         {
-            return _userService.AddUser(user);
+            return _userService.AddUser(userDto);
         }
 
 

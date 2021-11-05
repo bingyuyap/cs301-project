@@ -37,3 +37,6 @@ Desktop.ini
 appsettings.Development.json
 appsettings.json
 launchSettings.json
+
+# csv files with sensitive data
+Repo/Helpers/Seeds/users.csv

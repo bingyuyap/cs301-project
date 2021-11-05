@@ -25,10 +25,11 @@ namespace CS301_Spend_Transactions.Services
         {
             var messages = await _sqsHelper.GetMessage();
 
-            foreach (var message in messages)
-            {
-                _logger.LogInformation(message.ToString());
-            }
+            // foreach (var message in messages)
+            // {
+            //     var dto = TransactionMapperHelper.ToTransactionDTO(message.Body);
+            //     _logger.LogInformation(message.Body);
+            // }
 
             return messages;
         }

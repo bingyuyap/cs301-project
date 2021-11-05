@@ -1,6 +1,7 @@
 using CS301_Spend_Transactions.Models;
 
 using CS301_Spend_Transactions.Controllers.Interfaces;
+using CS301_Spend_Transactions.Domain.DTO;
 using CS301_Spend_Transactions.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -20,9 +21,9 @@ namespace CS301_Spend_Transactions.Controllers
         }
         
         [HttpPost("/api/Transaction/AddTransaction")]
-        public Transaction AddTransaction(Transaction transaction)
+        public Transaction AddTransaction(TransactionDTO transactionDto)
         {
-            return _transactionService.AddTransaction(transaction);
+            return _transactionService.AddTransaction(transactionDto);
         }
 
         [HttpGet("/api/Transaction/GetTransaction")]

@@ -23,6 +23,7 @@ namespace CS301_Spend_Transactions.Controllers
             await _databaseSeeder.SeedCardEntries();
             await _databaseSeeder.SeedMerchantEntries();
             await _databaseSeeder.SeedGroupEntries();
+            await _databaseSeeder.SeedPointsTypeEntries();
             await _databaseSeeder.SeedProgramEntries();
             await _databaseSeeder.SeedTransactionEntries();
         }
@@ -37,6 +38,12 @@ namespace CS301_Spend_Transactions.Controllers
         public async void SeedCards()
         {
             await _databaseSeeder.SeedCardEntries();
+        }
+        
+        [HttpGet("/api/Database/SeedUsersAndCards")]
+        public async void SeedUsersAndCards()
+        {
+            await _databaseSeeder.SeedUserAndCardEntries();
         }
 
         [HttpGet("/api/Database/SeedTransactions")]
