@@ -7,7 +7,7 @@ namespace CS301_Spend_Transactions.Models
     {
         // Primary key
         public string Name { get; set; }
-        public int MCC { get; set; }
+        public int? MCC { get; set; }
         
         // Navigation properties
         public ICollection<Campaign> Campaigns { get; set; }
