@@ -30,7 +30,7 @@ namespace CS301_Spend_Transactions.Service.HostedServices
         
         private async Task DoWork(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            // while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation(
                     "[TimedHostedService/DoWork] Starting an iteration");
@@ -44,7 +44,7 @@ namespace CS301_Spend_Transactions.Service.HostedServices
                 });
                 _logger.LogInformation($"Converted {dtos.Count()} messages to DTO");
 
-                foreach (var dto in dtos)
+                Parallel.ForEach(dtos, dto =>
                 {
                     try
                     {
@@ -56,7 +56,7 @@ namespace CS301_Spend_Transactions.Service.HostedServices
                         _logger.LogCritical(
                             $"[TimedHostedService/DoWork] Transaction {dto.Transaction_Id} failed due to {e.Message}");
                     }
-                }
+                });
             }
                 
 
