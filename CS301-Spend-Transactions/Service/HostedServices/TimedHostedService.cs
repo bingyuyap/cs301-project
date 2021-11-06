@@ -51,6 +51,8 @@ namespace CS301_Spend_Transactions.Service.HostedServices
                 var messages = _sqsService.GetMessages();
                 _logger.LogInformation($"Consumed {messages.Result.Count} messages from SQS");
 
+                if (messages.Result.Count == 0) return;
+
                 var dtos = messages.Result.Select(m => { return TransactionMapperHelper.ToTransactionDTO(m.Body); });
                 _logger.LogInformation($"Converted {dtos.Count()} messages to DTO");
 
