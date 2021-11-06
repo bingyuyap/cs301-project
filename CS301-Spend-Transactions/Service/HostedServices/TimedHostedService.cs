@@ -43,7 +43,7 @@ namespace CS301_Spend_Transactions.Service.HostedServices
             var sw = Stopwatch.StartNew();
             _logger.LogInformation(
                 "[TimedHostedService/DoWork] Starting an iteration");
-            
+
             var checkpoint1 = sw.ElapsedMilliseconds;
 
             Parallel.For(1, 101, i =>
@@ -56,12 +56,12 @@ namespace CS301_Spend_Transactions.Service.HostedServices
                 var dtos = messages.Result.Select(m => { return TransactionMapperHelper.ToTransactionDTO(m.Body); });
                 _logger.LogInformation($"Converted {dtos.Count()} messages to DTO");
 
-                Parallel.ForEach(dtos, dto =>
+                foreach (var dto in dtos)
                 {
                     try
                     {
                         _logger.LogInformation(dto.ToString());
-                        
+
                         // cannot async because need merchant as fk to index transactions
                         _merchantService.AddMerchant(dto);
                         _transactionService.AddTransaction(dto);
@@ -71,12 +71,11 @@ namespace CS301_Spend_Transactions.Service.HostedServices
                         _logger.LogCritical(
                             $"[TimedHostedService/DoWork] Transaction {dto.Transaction_Id} failed due to {e.Message}");
                     }
-                });
-                
+                }
             });
             var checkpoint2 = sw.ElapsedMilliseconds;
             _logger.LogInformation($"Time taken for parallel indexing {checkpoint2 - checkpoint1}");
-            
+
             _logger.LogInformation($"Time taken from consuming to indexing {sw.ElapsedMilliseconds}");
 
             // not delaying for now as we want to maximize performance
