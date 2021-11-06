@@ -30,7 +30,7 @@ namespace CS301_Spend_Transactions.Controllers
             await _databaseSeeder.SeedExclusionEntries();
             await _databaseSeeder.SeedCampaignEntries();
             await _databaseSeeder.SeedProgramEntries();
-            await _databaseSeeder.SeedTransactionEntries();
+            // await _databaseSeeder.SeedTransactionEntries();
         }
 
         [HttpGet("/api/Database/SeedUsers")]
