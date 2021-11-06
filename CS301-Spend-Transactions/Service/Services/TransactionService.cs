@@ -65,7 +65,7 @@ namespace CS301_Spend_Transactions.Services
             if (exclusions.Any())
             {
                 dbContext.Transactions.Add(transaction);
-                // dbContext.SaveChangesAsync();
+                dbContext.SaveChangesAsync();
                 return transaction;
             }
             
