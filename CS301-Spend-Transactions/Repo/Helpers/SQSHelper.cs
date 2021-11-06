@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Amazon;
 using Amazon.Runtime;
 using Amazon.SQS;
 using Amazon.SQS.Model;
@@ -25,7 +26,8 @@ namespace CS301_Spend_Transactions.Repo.Helpers
         {
             _option = option.Value;
             _amazonSqsClient = new AmazonSQSClient(
-                new BasicAWSCredentials(_option.AccessKey, _option.SecretKey)
+                new BasicAWSCredentials(_option.AccessKey, _option.SecretKey),
+                RegionEndpoint.APSoutheast1
             );
             _logger = logger;
         }
