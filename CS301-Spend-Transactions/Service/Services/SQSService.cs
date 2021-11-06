@@ -29,5 +29,10 @@ namespace CS301_Spend_Transactions.Services
 
             return messages;
         }
+
+        public Task<Message> GetSingleMessage()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
