@@ -3,6 +3,7 @@ using System.Linq;
 using CS301_Spend_Transactions.Domain.DTO;
 using CS301_Spend_Transactions.Models;
 using CS301_Spend_Transactions.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -47,8 +48,16 @@ namespace CS301_Spend_Transactions.Services
                 MCC = transactionDto.MCC
             };
 
-            dbContext.Merchants.Add(merchant);
-            dbContext.SaveChanges();
+            try
+            {
+                dbContext.Merchants.Add(merchant);
+                dbContext.SaveChanges();
+            }
+            catch (DbUpdateException e)
+            {
+                _logger.LogWarning(e.Message);
+            }
+            
             return merchant;
         }
 
