@@ -19,6 +19,7 @@ namespace CS301_Spend_Transactions.Services
     public class TransactionService : ITransactionService
     {
         private readonly ILogger<TransactionService> _logger;
+
         // Manages the lifetime of the services we going to inject
         private readonly IServiceScopeFactory _scopeFactory;
 
@@ -28,7 +29,7 @@ namespace CS301_Spend_Transactions.Services
             _scopeFactory = scopeFactory;
             _logger = logger;
         }
-        
+
         /**
          * Adds a transaction into the database, handling all the necessary checks and points earned
          */
@@ -38,14 +39,14 @@ namespace CS301_Spend_Transactions.Services
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
             var transaction = TransactionMapperHelper.ToTransaction(transactionDto);
-            
+
             // 1-Validate transaction
             if (transaction.Amount < 0)
             {
                 _logger.LogCritical("Amount is negative");
                 throw new InvalidTransactionException("Transaction cannot have a negative amount");
             }
-            
+
             if (dbContext.Cards.Find(transaction.CardId) is null)
             {
                 _logger.LogCritical("Card not found");
@@ -56,10 +57,10 @@ namespace CS301_Spend_Transactions.Services
             {
                 _logger.LogCritical("Transaction exists within the database");
                 throw new InvalidTransactionException("Transaction has already been processed");
-            } 
-            
+            }
+
             // 2-Find any exclusions. If an exclusion applies, no points are earned
-            var exclusions = dbContext.Exclusions.Where(exclusion 
+            var exclusions = dbContext.Exclusions.Where(exclusion
                 => exclusion.MCC == transactionDto.MCC);
 
             if (exclusions.Any())
@@ -68,17 +69,17 @@ namespace CS301_Spend_Transactions.Services
                 dbContext.SaveChangesAsync();
                 return transaction;
             }
-            
+
             // 3-Check for points earned through card program
             var foreignSpend = (!transactionDto.Currency.Equals("SGD"));
-            
+
             // Check for special program rules based on MCC 
             var programs = dbContext.Programs.Where(program =>
-                    program.CardType == transactionDto.Card_Type
-                    && program.MinSpend <= transactionDto.Amount
-                    && program.MaxSpend > transactionDto.Amount
-                    && program.ForeignSpend == foreignSpend    
-                    && program.MCC == transactionDto.MCC
+                program.CardType == transactionDto.Card_Type
+                && program.MinSpend <= transactionDto.Amount
+                && program.MaxSpend > transactionDto.Amount
+                && program.ForeignSpend == foreignSpend
+                && program.MCC == transactionDto.MCC
             );
 
             // Otherwise, use base rule
@@ -92,7 +93,7 @@ namespace CS301_Spend_Transactions.Services
                     && program.MCC == -1
                 );
             }
-            
+
             foreach (var program in programs)
             {
                 var points = new Points
@@ -102,17 +103,17 @@ namespace CS301_Spend_Transactions.Services
                     TransactionId = transaction.Id,
                     PointsTypeId = program.PointsTypeId
                 };
-                
+
                 // Handle foreign currency conversion
                 if (foreignSpend)
                 {
                     points.Amount = CurrencyConverter.ConvertToSgd(transactionDto.Currency, points.Amount);
                 }
-                
+
                 dbContext.Points.Add(points);
             }
 
-            
+
             // 4-Check for points earned through campaigns
             var campaigns = dbContext.Campaigns.Where(campaign =>
                 campaign.CardType == transactionDto.Card_Type
@@ -123,7 +124,7 @@ namespace CS301_Spend_Transactions.Services
                 && campaign.StartDate < DateTime.Now
                 && campaign.EndDate > DateTime.Now
             );
-            
+
             foreach (var campaign in campaigns)
             {
                 var points = new Points
@@ -133,16 +134,16 @@ namespace CS301_Spend_Transactions.Services
                     TransactionId = transaction.Id,
                     PointsTypeId = campaign.PointsTypeId
                 };
-                
+
                 // Handle foreign currency conversion
                 if (foreignSpend)
                 {
                     points.Amount = CurrencyConverter.ConvertToSgd(transactionDto.Currency, points.Amount);
                 }
-                
+
                 dbContext.Points.Add(points);
             }
-            
+
             // 5-Save changes to db
             dbContext.Transactions.Add(transaction);
             dbContext.SaveChangesAsync();
