@@ -34,7 +34,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
         {
             _logger.LogInformation(
                 "[SQSHelper/GetMessages] making new receive message request");
-
+            
             var request = new ReceiveMessageRequest
             {
                 MaxNumberOfMessages = 10,
@@ -70,8 +70,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             var response = await _amazonSqsClient.ReceiveMessageAsync(request);
             
             if (response is null || response.Messages is null) return null;
-
-
+            
             try
             {
                 await _amazonSqsClient.DeleteMessageAsync(new DeleteMessageRequest(_option.QueueURL,
