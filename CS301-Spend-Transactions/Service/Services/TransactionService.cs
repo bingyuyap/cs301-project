@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using CS301_Spend_Transactions.Domain.DTO;
 using CS301_Spend_Transactions.Domain.Exceptions;
 using CS301_Spend_Transactions.Models;
@@ -31,7 +32,7 @@ namespace CS301_Spend_Transactions.Services
         /**
          * Adds a transaction into the database, handling all the necessary checks and points earned
          */
-        public Transaction AddTransaction(TransactionDTO transactionDto)
+        public async Task<Transaction> AddTransaction(TransactionDTO transactionDto)
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -64,7 +65,7 @@ namespace CS301_Spend_Transactions.Services
             if (exclusions.Any())
             {
                 dbContext.Transactions.Add(transaction);
-                dbContext.SaveChanges();
+                // dbContext.SaveChangesAsync();
                 return transaction;
             }
             
@@ -144,7 +145,7 @@ namespace CS301_Spend_Transactions.Services
             
             // 5-Save changes to db
             dbContext.Transactions.Add(transaction);
-            dbContext.SaveChanges();
+            dbContext.SaveChangesAsync();
             return transaction;
         }
 
