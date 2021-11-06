@@ -46,17 +46,34 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                 };
 
                 var response = await _amazonSqsClient.ReceiveMessageAsync(request);
-                
+
                 _logger.LogInformation(
                     "[SQSHelper/GetMessages] Finish await messages");
                 batch.AddRange(response.Messages.Any() ? response.Messages : new List<Message>());
             }
-           
-           
+
 
             // await DeleteMessages(messages);
 
             return batch;
+        }
+
+        public async Task<Message> GetSingleMessage()
+        {
+            _logger.LogInformation(
+                "[SQSHelper/GetMessages] making new receive message request");
+            
+            var request = new ReceiveMessageRequest
+            {
+                MaxNumberOfMessages = 1,
+                QueueUrl = _option.QueueURL,
+                // VisibilityTimeout = (int)TimeSpan.FromMinutes(10).TotalSeconds,
+                // WaitTimeSeconds = (int)TimeSpan.FromSeconds(5).TotalSeconds
+            };
+
+            var response = await _amazonSqsClient.ReceiveMessageAsync(request);
+            
+            return response.Messages.Single();
         }
 
         public async Task DeleteMessages(List<Message> messages)
