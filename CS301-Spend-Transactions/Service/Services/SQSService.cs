@@ -30,9 +30,9 @@ namespace CS301_Spend_Transactions.Services
             return messages;
         }
 
-        public Task<Message> GetSingleMessage()
+        public async Task<Message> GetSingleMessage()
         {
-            throw new System.NotImplementedException();
+            return await _sqsHelper.GetSingleMessage();
         }
     }
 }
