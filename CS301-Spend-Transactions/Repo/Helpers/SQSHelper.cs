@@ -34,28 +34,24 @@ namespace CS301_Spend_Transactions.Repo.Helpers
         {
             _logger.LogInformation(
                 "[SQSHelper/GetMessages] making new receive message request");
-            List<Message> batch = new List<Message>();
-            for (int i = 0; i < 10; i++)
+
+            var request = new ReceiveMessageRequest
             {
-                var request = new ReceiveMessageRequest
-                {
-                    MaxNumberOfMessages = 10,
-                    QueueUrl = _option.QueueURL,
-                    // VisibilityTimeout = (int)TimeSpan.FromMinutes(10).TotalSeconds,
-                    // WaitTimeSeconds = (int)TimeSpan.FromSeconds(5).TotalSeconds
-                };
+                MaxNumberOfMessages = 10,
+                QueueUrl = _option.QueueURL,
+                // VisibilityTimeout = (int)TimeSpan.FromMinutes(10).TotalSeconds,
+                // WaitTimeSeconds = (int)TimeSpan.FromSeconds(5).TotalSeconds
+            };
 
-                var response = await _amazonSqsClient.ReceiveMessageAsync(request);
+            var response = await _amazonSqsClient.ReceiveMessageAsync(request);
 
-                _logger.LogInformation(
-                    "[SQSHelper/GetMessages] Finish await messages");
-                batch.AddRange(response.Messages.Any() ? response.Messages : new List<Message>());
-            }
+            _logger.LogInformation(
+                "[SQSHelper/GetMessages] Finish await messages");
+            var messages = response.Messages.Any() ? response.Messages : new List<Message>();
+            
+            DeleteMessages(messages);
 
-
-            // await DeleteMessages(messages);
-
-            return batch;
+            return messages;
         }
 
         public async Task<Message> GetSingleMessage()
@@ -73,14 +69,29 @@ namespace CS301_Spend_Transactions.Repo.Helpers
 
             var response = await _amazonSqsClient.ReceiveMessageAsync(request);
             
-            return response.Messages.Single();
+            if (response is null || response.Messages is null) return null;
+
+
+            try
+            {
+                await _amazonSqsClient.DeleteMessageAsync(new DeleteMessageRequest(_option.QueueURL,
+                    response.Messages.Single().ReceiptHandle));
+
+                return response.Messages.Single();
+            }
+            catch (InvalidOperationException e)
+            {
+                _logger.LogWarning($"No message due to {e.Message}");
+                return null;
+            }
+            
         }
 
         public async Task DeleteMessages(List<Message> messages)
         {
             foreach (var message in messages)
             {
-                await _amazonSqsClient.DeleteMessageAsync(new DeleteMessageRequest(_option.QueueURL,
+                _amazonSqsClient.DeleteMessageAsync(new DeleteMessageRequest(_option.QueueURL,
                     message.ReceiptHandle));
             }
         }
