@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CS301_Spend_Transactions.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211101080156_InitialCreate")]
+    [Migration("20211106002610_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -294,6 +294,9 @@ namespace CS301_Spend_Transactions.Migrations
             modelBuilder.Entity("CS301_Spend_Transactions.Models.Program", b =>
                 {
                     b.HasBaseType("CS301_Spend_Transactions.Models.Rule");
+
+                    b.Property<int>("MCC")
+                        .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("Program");
                 });

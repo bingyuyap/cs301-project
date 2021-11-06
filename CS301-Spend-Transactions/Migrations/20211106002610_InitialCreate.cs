@@ -95,7 +95,8 @@ namespace CS301_Spend_Transactions.Migrations
                     description = table.Column<string>(nullable: true),
                     start_date = table.Column<DateTime>(nullable: true),
                     end_date = table.Column<DateTime>(nullable: true),
-                    MerchantName = table.Column<string>(nullable: true)
+                    MerchantName = table.Column<string>(nullable: true),
+                    MCC = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {

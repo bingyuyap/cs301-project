@@ -293,6 +293,9 @@ namespace CS301_Spend_Transactions.Migrations
                 {
                     b.HasBaseType("CS301_Spend_Transactions.Models.Rule");
 
+                    b.Property<int>("MCC")
+                        .HasColumnType("int");
+
                     b.HasDiscriminator().HasValue("Program");
                 });
 
