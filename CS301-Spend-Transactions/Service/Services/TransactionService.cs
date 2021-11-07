@@ -73,36 +73,46 @@ namespace CS301_Spend_Transactions.Services
             // 3-Check for points earned through card program
             var foreignSpend = (!transactionDto.Currency.Equals("SGD"));
 
-            // Check for special program rules based on MCC, otherwise use base rule 
-            var cardProgram = dbContext.Programs.First(program =>
+            // Check for special program rules based on MCC 
+            var programs = dbContext.Programs.Where(program =>
                 program.CardType == transactionDto.Card_Type
                 && program.MinSpend <= transactionDto.Amount
                 && program.MaxSpend > transactionDto.Amount
                 && program.ForeignSpend == foreignSpend
                 && program.MCC == transactionDto.MCC
-            ) ?? dbContext.Programs.First(program =>
-                program.CardType == transactionDto.Card_Type
-                && program.MinSpend <= transactionDto.Amount
-                && program.MaxSpend > transactionDto.Amount
-                && program.ForeignSpend == foreignSpend
-                && program.MCC == -1
             );
 
-            var programPoints = new Points
+            // Otherwise, use base rule
+            if (!programs.Any())
             {
-                Amount = cardProgram.GetReward(transaction.Amount),
-                ProcessedDate = DateTime.Now,
-                TransactionId = transaction.Id,
-                PointsTypeId = cardProgram.PointsTypeId
-            };
-
-            // Handle foreign currency conversion
-            if (foreignSpend)
-            {
-                programPoints.Amount = CurrencyConverter.ConvertToSgd(transactionDto.Currency, programPoints.Amount);
+                programs = dbContext.Programs.Where(program =>
+                    program.CardType == transactionDto.Card_Type
+                    && program.MinSpend <= transactionDto.Amount
+                    && program.MaxSpend > transactionDto.Amount
+                    && program.ForeignSpend == foreignSpend
+                    && program.MCC == -1
+                );
             }
 
-            dbContext.Points.Add(programPoints);
+            foreach (var program in programs)
+            {
+                var points = new Points
+                {
+                    Amount = program.GetReward(transaction.Amount),
+                    ProcessedDate = DateTime.Now,
+                    TransactionId = transaction.Id,
+                    PointsTypeId = program.PointsTypeId
+                };
+
+                // Handle foreign currency conversion
+                if (foreignSpend)
+                {
+                    points.Amount = CurrencyConverter.ConvertToSgd(transactionDto.Currency, points.Amount);
+                }
+
+                dbContext.Points.Add(points);
+            }
+
 
             // 4-Check for points earned through campaigns
             var campaigns = dbContext.Campaigns.Where(campaign =>
@@ -117,7 +127,7 @@ namespace CS301_Spend_Transactions.Services
 
             foreach (var campaign in campaigns)
             {
-                var campaignPoints = new Points
+                var points = new Points
                 {
                     Amount = campaign.GetReward(transaction.Amount),
                     ProcessedDate = DateTime.Now,
@@ -128,10 +138,10 @@ namespace CS301_Spend_Transactions.Services
                 // Handle foreign currency conversion
                 if (foreignSpend)
                 {
-                    campaignPoints.Amount = CurrencyConverter.ConvertToSgd(transactionDto.Currency, campaignPoints.Amount);
+                    points.Amount = CurrencyConverter.ConvertToSgd(transactionDto.Currency, points.Amount);
                 }
 
-                dbContext.Points.Add(campaignPoints);
+                dbContext.Points.Add(points);
             }
 
             // 5-Save changes to db
