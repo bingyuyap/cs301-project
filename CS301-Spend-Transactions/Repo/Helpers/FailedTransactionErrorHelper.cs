@@ -2,13 +2,14 @@ using System.Linq;
 using System.Transactions;
 using CS301_Spend_Transactions.Domain.DTO;
 using CS301_Spend_Transactions.Models;
+using CS301_Spend_Transactions.Repo.Helpers.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace CS301_Spend_Transactions.Repo.Helpers
 {
-    public class FailedTransactionErrorHelper
+    public class FailedTransactionErrorHelper : IFailedTransactionErrorHelper
     {
         private readonly ILogger<FailedTransactionErrorHelper> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
