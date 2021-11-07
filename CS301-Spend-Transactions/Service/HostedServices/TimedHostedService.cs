@@ -39,45 +39,46 @@ namespace CS301_Spend_Transactions.Service.HostedServices
 
         private async Task DoWork(CancellationToken stoppingToken)
         {
-            // while (!stoppingToken.IsCancellationRequested)
-            var sw = Stopwatch.StartNew();
-            _logger.LogInformation(
-                "[TimedHostedService/DoWork] Starting an iteration");
-
-            var checkpoint1 = sw.ElapsedMilliseconds;
-
-            Parallel.For(1, 101, i =>
+            while (!stoppingToken.IsCancellationRequested)
             {
-                var messages = _sqsService.GetMessages();
-                _logger.LogInformation($"Consumed {messages.Result.Count} messages from SQS");
+                _logger.LogInformation(
+                    "[TimedHostedService/DoWork] Starting an iteration");
+                
+                var sw = Stopwatch.StartNew();
+                var checkpoint1 = sw.ElapsedMilliseconds;
 
-                if (messages.Result.Count == 0) return;
-
-                var dtos = messages.Result.Select(m => { return TransactionMapperHelper.ToTransactionDTO(m.Body); });
-                _logger.LogInformation($"Converted {dtos.Count()} messages to DTO");
-
-                foreach (var dto in dtos)
+                Parallel.For(1, 101, i =>
                 {
-                    try
+                    var messages = _sqsService.GetMessages();
+                    _logger.LogInformation($"Consumed {messages.Result.Count} messages from SQS");
+
+                    if (messages.Result.Count == 0) return;
+
+                    var dtos = messages.Result.Select(m =>
                     {
-                        _logger.LogInformation(dto.ToString());
+                        return TransactionMapperHelper.ToTransactionDTO(m.Body);
+                    });
+                    _logger.LogInformation($"Converted {dtos.Count()} messages to DTO");
 
-                        // cannot async because need merchant as fk to index transactions
-                        _merchantService.AddMerchant(dto);
-                        _transactionService.AddTransaction(dto);
-                    }
-                    catch (InvalidTransactionException e)
+                    foreach (var dto in dtos)
                     {
-                        _logger.LogCritical(
-                            $"[TimedHostedService/DoWork] Transaction {dto.Transaction_Id} failed due to {e.Message}");
+                        try
+                        {
+                            _logger.LogInformation(dto.ToString());
+
+                            // cannot async because need merchant as fk to index transactions
+                            _merchantService.AddMerchant(dto);
+                            _transactionService.AddTransaction(dto);
+                        }
+                        catch (InvalidTransactionException e)
+                        {
+                            _logger.LogCritical(
+                                $"[TimedHostedService/DoWork] Transaction {dto.Transaction_Id} failed due to {e.Message}");
+                        }
                     }
-                }
-            });
-            var checkpoint2 = sw.ElapsedMilliseconds;
-            _logger.LogInformation($"Time taken for parallel indexing {checkpoint2 - checkpoint1}");
-
-            _logger.LogInformation($"Time taken from consuming to indexing {sw.ElapsedMilliseconds}");
-
+                });
+                _logger.LogInformation($"Time taken from consuming to indexing {sw.ElapsedMilliseconds}");
+            }
             // not delaying for now as we want to maximize performance
             // await Task.Delay(1, stoppingToken);
         }
