@@ -78,6 +78,8 @@ namespace CS301_Spend_Transactions.Service.HostedServices
                         {
                             _logger.LogCritical(
                                 $"[TimedHostedService/DoWork] Transaction {dto.Transaction_Id} failed due to {e.Message}");
+                            
+                            _failedTransactionErrorHelper.HandleFailedTransaction(dto);
                         }
                     }
                 });
