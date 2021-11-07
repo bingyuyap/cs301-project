@@ -14,14 +14,17 @@ namespace CS301_Spend_Transactions.Controllers
         private readonly ILogger<UserController> _logger;
         private IUserService _userService;
         private IDatabaseSeeder _databaseSeeder;
+        private ISESHelper _sesHelper;
 
         public UserController(ILogger<UserController> logger, 
             IUserService userService,
-            IDatabaseSeeder databaseSeeder) : base(logger)
+            IDatabaseSeeder databaseSeeder,
+            ISESHelper sesHelper) : base(logger)
         {
             _logger = logger;
             _userService = userService;
             _databaseSeeder = databaseSeeder;
+            _sesHelper = sesHelper;
         }
         
         [HttpPost("/api/User/AddUser")]
@@ -36,6 +39,12 @@ namespace CS301_Spend_Transactions.Controllers
         public User GetUserById(string Id)
         {
             return _userService.GetUserById(Id);
+        }
+
+        [HttpGet("api/User/SendEmail")]
+        public void SendEmail(string Id)
+        {
+            _sesHelper.SendFailedTransactionEmail(Id);
         }
     }
 }

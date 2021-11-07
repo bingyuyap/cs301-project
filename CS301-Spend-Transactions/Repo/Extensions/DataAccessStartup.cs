@@ -24,6 +24,8 @@ namespace CS301_Spend_Transactions.Extensions
             services.AddTransient<IDatabaseSeeder, DatabaseSeeder>();
             
             services.AddSingleton<ISQSHelper, SQSHelper>();
+            services.AddSingleton<ISESHelper, SESHelper>();
+            services.AddSingleton<IFailedTransactionErrorHelper, FailedTransactionErrorHelper>();
             services.AddAWSService<IAmazonSQS>();
 
         }
