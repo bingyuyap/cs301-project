@@ -22,9 +22,10 @@ namespace CS301_Spend_Transactions.Repo.Helpers
 
         public void handleFailedTransaction(TransactionDTO transactionDto)
         {
+            
         }
 
-        private void persistFailedTransaction(TransactionDTO transactionDto)
+        private FailedTransaction persistFailedTransaction(TransactionDTO transactionDto)
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -48,6 +49,8 @@ namespace CS301_Spend_Transactions.Repo.Helpers
 
             dbContext.FailedTransactions.Add(failedTransaction);
             dbContext.SaveChangesAsync();
+
+            return failedTransaction;
         }
 
         private FailedTransaction DtoToFailedTransaction(TransactionDTO transactionDto)
