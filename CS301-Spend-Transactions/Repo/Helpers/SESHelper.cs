@@ -16,11 +16,11 @@ namespace CS301_Spend_Transactions.Repo.Helpers
     {
         // Replace sender@example.com with your "From" address.
         // This address must be verified with Amazon SES.
-        static readonly string senderAddress;
+        static string senderAddress;
 
         // Replace recipient@example.com with a "To" address. If your account
         // is still in the sandbox, this address must be verified.
-        static readonly string receiverAddress;
+        static string receiverAddress;
 
         // The subject line for the email.
         static readonly string subject = "[Warning] Invalid transactions";
@@ -39,7 +39,8 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                 new BasicAWSCredentials(_option.AccessKey, _option.SecretKey),
                 RegionEndpoint.APSoutheast1
             );
-            recevier
+            senderAddress = _option.SenderEmail;
+            receiverAddress = _option.ReceiverEmail;
             _logger = logger;
         }
 
