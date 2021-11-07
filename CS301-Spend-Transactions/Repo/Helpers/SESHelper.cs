@@ -12,40 +12,21 @@ using Microsoft.Extensions.Options;
 
 namespace CS301_Spend_Transactions.Repo.Helpers
 {
-    public class SESHelper : ISESHelper 
+    public class SESHelper : ISESHelper
     {
         // Replace sender@example.com with your "From" address.
         // This address must be verified with Amazon SES.
-        static readonly string senderAddress = "bingyu.yap.21@gmail.com";
+        static readonly string senderAddress;
 
         // Replace recipient@example.com with a "To" address. If your account
         // is still in the sandbox, this address must be verified.
-        static readonly string receiverAddress = "bingyu.yap.2020@scis.smu.edu.sg";
-
-        // The configuration set to use for this email. If you do not want to use a
-        // configuration set, comment out the following property and the
-        // ConfigurationSetName = configSet argument below. 
-        static readonly string configSet = "ConfigSet";
+        static readonly string receiverAddress;
 
         // The subject line for the email.
-        static readonly string subject = "Amazon SES test (AWS SDK for .NET)";
+        static readonly string subject = "[Warning] Invalid transactions";
 
         // The email body for recipients with non-HTML email clients.
-        static readonly string textBody = "Amazon SES Test (.NET)\r\n"
-                                          + "This email was sent through Amazon SES "
-                                          + "using the AWS SDK for .NET.";
-
-        // The HTML body of the email.
-        string htmlBody = @"<html>
-        <head></head>
-        <body>
-          <h1>Amazon SES Test (AWS SDK for .NET)</h1>
-          <p>This email was sent with
-            <a href='https://aws.amazon.com/ses/'>Amazon SES</a> using the
-            <a href='https://aws.amazon.com/sdk-for-net/'>
-              AWS SDK for .NET</a>.</p>
-        </body>
-        </html>";
+        static readonly string textBody = "Invalid transaction(s), please check failed_transaction database";
         
         private readonly SESOption _option;
         private AmazonSimpleEmailServiceClient _amazonSimpleEmailServiceClient;
@@ -55,10 +36,10 @@ namespace CS301_Spend_Transactions.Repo.Helpers
         {
             _option = option.Value;
             _amazonSimpleEmailServiceClient = new AmazonSimpleEmailServiceClient(
-                _option.AccessKey,
-                _option.SecretKey,
+                new BasicAWSCredentials(_option.AccessKey, _option.SecretKey),
                 RegionEndpoint.APSoutheast1
             );
+            recevier
             _logger = logger;
         }
 
@@ -82,7 +63,13 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                             Html = new Content
                             {
                                 Charset = "UTF-8",
-                                Data = htmlBody
+                                Data = $@"<html>
+        <head></head>
+        <body>
+          <p> Transaction with transaction_id {transactionId} is invalid.</p>
+          <p> Please check failed_transactions table for debugging. </p>
+        </body>
+        </html>"
                             },
                             Text = new Content
                             {
@@ -98,17 +85,15 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                 try
                 {
                     Console.WriteLine("Sending email using Amazon SES...");
-                    await client.SendEmailAsync(sendRequest);
+                    var sendEmailResponse = await client.SendEmailAsync(sendRequest);
                     Console.WriteLine("The email was sent successfully.");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("The email was not sent.");
                     Console.WriteLine("Error message: " + ex.Message);
-
                 }
             }
-
         }
     }
 }
