@@ -3,18 +3,19 @@ using System;
 using System.Collections.Generic;
 using Amazon.SimpleEmail;
 using Amazon.SimpleEmail.Model;
+using CS301_Spend_Transactions.Repo.Helpers.Interfaces;
 
 namespace CS301_Spend_Transactions.Repo.Helpers
 {
-    public class SESHelper
+    public class SESHelper : ISESHelper 
     {
         // Replace sender@example.com with your "From" address.
         // This address must be verified with Amazon SES.
-        static readonly string senderAddress = "sender@example.com";
+        static readonly string senderAddress = "bingyu.yap.21@gmail.com";
 
         // Replace recipient@example.com with a "To" address. If your account
         // is still in the sandbox, this address must be verified.
-        static readonly string receiverAddress = "recipient@example.com";
+        static readonly string receiverAddress = "bingyu.yap.2020@scis.smu.edu.sg";
 
         // The configuration set to use for this email. If you do not want to use a
         // configuration set, comment out the following property and the
