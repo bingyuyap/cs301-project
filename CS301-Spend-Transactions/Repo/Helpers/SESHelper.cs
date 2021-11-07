@@ -1,9 +1,14 @@
 using Amazon;
 using System;
 using System.Collections.Generic;
+using Amazon.Runtime;
 using Amazon.SimpleEmail;
 using Amazon.SimpleEmail.Model;
+using Amazon.SQS;
+using CS301_Spend_Transactions.Domain.Configurations;
 using CS301_Spend_Transactions.Repo.Helpers.Interfaces;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace CS301_Spend_Transactions.Repo.Helpers
 {
@@ -41,10 +46,25 @@ namespace CS301_Spend_Transactions.Repo.Helpers
               AWS SDK for .NET</a>.</p>
         </body>
         </html>";
+        
+        private readonly SESOption _option;
+        private AmazonSimpleEmailServiceClient _amazonSimpleEmailServiceClient;
+        private ILogger<SQSHelper> _logger;
+
+        public SESHelper(IOptions<SESOption> option, ILogger<SQSHelper> logger)
+        {
+            _option = option.Value;
+            _amazonSimpleEmailServiceClient = new AmazonSimpleEmailServiceClient(
+                _option.AccessKey,
+                _option.SecretKey,
+                RegionEndpoint.APSoutheast1
+            );
+            _logger = logger;
+        }
 
         public async void SendFailedTransactionEmail(string transactionId)
         {
-            using (var client = new AmazonSimpleEmailServiceClient(RegionEndpoint.USWest2))
+            using (var client = _amazonSimpleEmailServiceClient)
             {
                 var sendRequest = new SendEmailRequest
                 {
@@ -73,7 +93,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                     },
                     // If you are not using a configuration set, comment
                     // or remove the following line 
-                    ConfigurationSetName = configSet
+                    // ConfigurationSetName = configSet
                 };
                 try
                 {
