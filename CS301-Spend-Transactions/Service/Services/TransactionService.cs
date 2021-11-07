@@ -94,8 +94,9 @@ namespace CS301_Spend_Transactions.Services
                 );
             }
 
-            foreach (var program in programs)
+            if (!programs.Any())
             {
+                var program = programs.First();
                 var points = new Points
                 {
                     Amount = program.GetReward(transaction.Amount),
