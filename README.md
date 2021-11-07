@@ -70,9 +70,29 @@ with the relevant values for your local machine
 
 The application consumes messages from an AWS SQS queue, which must be specified in `<queue-url>`. `<queue-region>`denotes the region that the queue is deployed in. `access-key` and `secret-key` correspond to the key pairs for AWS programmatic access. Finally, `sender-email-address`  and `receiver-email-address` correspond to the email addresses to be used for notifications on failed transactions.
 
+### Setting up database
+Making sure your database URL in appsettings.json is valid:
+1. In the directorty CS301-Spend-Transactions, run 
+```sh
+dotnet ef database update
+```
+
+*Note that for this service to work properly, you require data in these tables
+1. users
+2. cards
+3. exclusions
+4. merchants 
+5. points_type
+6. rules
+
+You can use ```/api/Database/InitialSeed``` endpoint to do the initial seeding. For users and cards we recommend using Jetbrains Riders to import the user.csv to users and cards table as seeding up to millions of rows is rather slow.
+
 ### Usage
 
 **Local**: After filling out the necessary details in `appsettings.json` and `launchSettings.json`, navigate into `CS301-Spend-Transactions` directory and execute `dotnet run` within the terminal
 
 **Docker**: After running `docker build` from the root directory, you can run a container of the docker image, specifying individual environment variables with the `-e` flag or in an file with`--env-file`
+
+
+
 
