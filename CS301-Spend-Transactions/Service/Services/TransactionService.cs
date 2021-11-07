@@ -94,7 +94,7 @@ namespace CS301_Spend_Transactions.Services
                 );
             }
 
-            if (!programs.Any())
+            if (programs.Any())
             {
                 var program = programs.First();
                 var points = new Points
