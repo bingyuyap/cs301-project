@@ -20,12 +20,17 @@ namespace CS301_Spend_Transactions.Repo.Helpers
             _logger = logger;
         }
 
-        public void handleFailedTransaction(TransactionDTO transactionDto)
+        public void HandleFailedTransaction(TransactionDTO transactionDto)
         {
-            
+            var failedTransaction =  PersistFailedTransaction(transactionDto);
+
+            if (failedTransaction.Count > 2)
+            {
+                
+            }
         }
 
-        private FailedTransaction persistFailedTransaction(TransactionDTO transactionDto)
+        private FailedTransaction PersistFailedTransaction(TransactionDTO transactionDto)
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
