@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using CS301_Spend_Transactions.Models;
 
 using CS301_Spend_Transactions.Controllers.Interfaces;
@@ -21,7 +22,7 @@ namespace CS301_Spend_Transactions.Controllers
         }
         
         [HttpPost("/api/Transaction/AddTransaction")]
-        public Transaction AddTransaction(TransactionDTO transactionDto)
+        public Task<Transaction> AddTransaction(TransactionDTO transactionDto)
         {
             return _transactionService.AddTransaction(transactionDto);
         }

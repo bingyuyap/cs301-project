@@ -42,7 +42,7 @@ namespace CS301_Spend_Transactions
 
             services.AddControllers();
 
-            // services.AddHostedService<TimedHostedService>();
+            services.AddHostedService<TimedHostedService>();
 
             // TODO: Configure and initialize DB context
         }

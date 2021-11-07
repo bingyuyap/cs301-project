@@ -1,3 +1,8 @@
+using System;
+using System.Collections;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,23 +16,27 @@ namespace CS301_Spend_Transactions.Service.HostedServices
 {
     public class TimedHostedService : BackgroundService
     {
-        
         private readonly ILogger<TimedHostedService> _logger;
         private readonly ISQSService _sqsService;
         private readonly ITransactionService _transactionService;
+        private readonly IMerchantService _merchantService;
 
-        public TimedHostedService(ILogger<TimedHostedService> logger, ISQSService sqsService, ITransactionService transactionService)
+        public TimedHostedService(ILogger<TimedHostedService> logger, ISQSService sqsService,
+            ITransactionService transactionService, IMerchantService merchantService)
         {
             _logger = logger;
             _sqsService = sqsService;
             _transactionService = transactionService;
+            _merchantService = merchantService;
         }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Timed Hosted Service is running");
+
             await DoWork(stoppingToken);
         }
-        
+
         private async Task DoWork(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
@@ -35,40 +44,43 @@ namespace CS301_Spend_Transactions.Service.HostedServices
                 _logger.LogInformation(
                     "[TimedHostedService/DoWork] Starting an iteration");
                 
-                var messages = await _sqsService.GetMessages();
-                _logger.LogInformation($"Consumed {messages.Count} messages from SQS");
+                var sw = Stopwatch.StartNew();
+                var checkpoint1 = sw.ElapsedMilliseconds;
 
-                var dtos = messages.Select(m =>
+                Parallel.For(1, 101, i =>
                 {
-                    return TransactionMapperHelper.ToTransactionDTO(m.Body);
+                    var messages = _sqsService.GetMessages();
+                    _logger.LogInformation($"Consumed {messages.Result.Count} messages from SQS");
+
+                    if (messages.Result.Count == 0) return;
+
+                    var dtos = messages.Result.Select(m =>
+                    {
+                        return TransactionMapperHelper.ToTransactionDTO(m.Body);
+                    });
+                    _logger.LogInformation($"Converted {dtos.Count()} messages to DTO");
+
+                    foreach (var dto in dtos)
+                    {
+                        try
+                        {
+                            _logger.LogInformation(dto.ToString());
+
+                            // cannot async because need merchant as fk to index transactions
+                            _merchantService.AddMerchant(dto);
+                            _transactionService.AddTransaction(dto);
+                        }
+                        catch (InvalidTransactionException e)
+                        {
+                            _logger.LogCritical(
+                                $"[TimedHostedService/DoWork] Transaction {dto.Transaction_Id} failed due to {e.Message}");
+                        }
+                    }
                 });
-                _logger.LogInformation($"Converted {dtos.Count()} messages to DTO");
-
-                foreach (var dto in dtos)
-                {
-                    try
-                    {
-                        _logger.LogInformation(dto.ToString());
-                        _transactionService.AddTransaction(dto);
-                    }
-                    catch (InvalidTransactionException e)
-                    {
-                        _logger.LogCritical(
-                            $"[TimedHostedService/DoWork] Transaction {dto.Transaction_Id} failed due to {e.Message}");
-                    }
-                }
+                _logger.LogInformation($"Time taken from consuming to indexing {sw.ElapsedMilliseconds}");
             }
-                
-
-            await Task.Delay(5, stoppingToken);
-        }
-        
-        public override async Task StopAsync(CancellationToken stoppingToken)
-        {
-            _logger.LogInformation(
-                "Timed Hosted Service is stopping.");
-
-            await base.StopAsync(stoppingToken);
+            // not delaying for now as we want to maximize performance
+            // await Task.Delay(1, stoppingToken);
         }
     }
 }

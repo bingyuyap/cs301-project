@@ -19,13 +19,18 @@ namespace CS301_Spend_Transactions.Controllers
         [HttpGet("/api/Database/InitialSeed")]
         public async void InitialSeed()
         {
-            await _databaseSeeder.SeedUserEntries();
-            await _databaseSeeder.SeedCardEntries();
+            // commented out because this is too slow via seeding
+            // import csv to database instead
+            // await _databaseSeeder.SeedUserEntries();
+            // await _databaseSeeder.SeedCardEntries();
             await _databaseSeeder.SeedMerchantEntries();
             await _databaseSeeder.SeedGroupEntries();
             await _databaseSeeder.SeedPointsTypeEntries();
             await _databaseSeeder.SeedProgramEntries();
-            await _databaseSeeder.SeedTransactionEntries();
+            await _databaseSeeder.SeedExclusionEntries();
+            await _databaseSeeder.SeedCampaignEntries();
+            await _databaseSeeder.SeedProgramEntries();
+            // await _databaseSeeder.SeedTransactionEntries();
         }
 
         [HttpGet("/api/Database/SeedUsers")]
@@ -62,6 +67,18 @@ namespace CS301_Spend_Transactions.Controllers
         public async void SeedPrograms()
         {
             await _databaseSeeder.SeedProgramEntries();
+        }
+        
+        [HttpGet("/api/Database/SeedCampaigns")]
+        public async void SeedCampaigns()
+        {
+            await _databaseSeeder.SeedCampaignEntries();
+        }
+        
+        [HttpGet("/api/Database/SeedExclusions")]
+        public async void SeedExclusions()
+        {
+            await _databaseSeeder.SeedExclusionEntries();
         }
         
         [HttpGet("/api/Database/SeedMerchants")]

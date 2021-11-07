@@ -303,7 +303,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
                         MCC = csvReader.GetField<int>("MCC"),
                         MinSpend = csvReader.GetField<decimal>("MinSpend"),
                         MaxSpend = csvReader.GetField<decimal>("MaxSpend"),
-                        ForeignSpend = csvReader.GetField<bool>("Foreign"),
+                        ForeignSpend = csvReader.GetField<bool>("ForeignSpend"),
                         PointsTypeId = csvReader.GetField<int>("PointsTypeId")
                     };
 

@@ -10,7 +10,7 @@ namespace CS301_Spend_Transactions.Domain.DTO
         public string Id { get; set; }
         public string Transaction_Id { get; set; }
         public string Merchant { get; set; }
-        public int MCC { get; set; }
+        public int? MCC { get; set; }
         public string Currency { get; set; }
         public decimal Amount { get; set; }
         public DateTime Transaction_Date { get; set; }

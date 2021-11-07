@@ -23,15 +23,16 @@ namespace CS301_Spend_Transactions.Services
 
         public async Task<List<Message>> GetMessages()
         {
+            _logger.LogInformation(
+                "[SQSService/GetMessages] awaiting SQSHelper");
             var messages = await _sqsHelper.GetMessage();
 
-            // foreach (var message in messages)
-            // {
-            //     var dto = TransactionMapperHelper.ToTransactionDTO(message.Body);
-            //     _logger.LogInformation(message.Body);
-            // }
-
             return messages;
+        }
+
+        public async Task<Message> GetSingleMessage()
+        {
+            return await _sqsHelper.GetSingleMessage();
         }
     }
 }

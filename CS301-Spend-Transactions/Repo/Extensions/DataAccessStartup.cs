@@ -19,6 +19,7 @@ namespace CS301_Spend_Transactions.Extensions
             services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ISQSService, SQSService>();
+            services.AddTransient<IMerchantService, MerchantService>();
             
             services.AddTransient<IDatabaseSeeder, DatabaseSeeder>();
             
