@@ -25,6 +25,7 @@ namespace CS301_Spend_Transactions
         public DbSet<PointsType> PointsTypes { get; set; }
         public DbSet<Merchant> Merchants { get; set; }
         public DbSet<Groups> Groups { get; set; }
+        public DbSet<FailedTransaction> FailedTransactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -267,6 +268,25 @@ namespace CS301_Spend_Transactions
                 entity.Property(g => g.MinMCC).HasColumnName("min_mcc");
                 entity.Property(g => g.MaxMCC).HasColumnName("max_mcc");
                 entity.Property(g => g.Name).HasColumnName("name");
+            });
+
+            modelBuilder.Entity<FailedTransaction>(entity =>
+            {
+                entity.HasKey(f => f.Transaction_Id)
+                    .HasName("failed_transactions_pkey");
+
+                entity.ToTable("failed_transactions");
+                
+                entity.Property(f => f.Id).HasColumnName("id");
+                entity.Property(f => f.Transaction_Id).HasColumnName("transaction_id");
+                entity.Property(f => f.Merchant).HasColumnName("mercant");
+                entity.Property(f => f.MCC).HasColumnName("mcc");
+                entity.Property(f => f.Currency).HasColumnName("currency");
+                entity.Property(f => f.Amount).HasColumnName("amount");
+                entity.Property(f => f.Transaction_Date).HasColumnName("transaction_date");
+                entity.Property(f => f.Card_Id).HasColumnName("card_id");
+                entity.Property(f => f.Card_Pan).HasColumnName("card_pan");
+                entity.Property(f => f.Card_Type).HasColumnName("card_type");
             });
 
             base.OnModelCreating(modelBuilder);
