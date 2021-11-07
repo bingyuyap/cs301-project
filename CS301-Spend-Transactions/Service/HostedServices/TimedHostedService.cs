@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CS301_Spend_Transactions.Domain.Exceptions;
 using CS301_Spend_Transactions.Repo.Helpers;
+using CS301_Spend_Transactions.Repo.Helpers.Interfaces;
 using CS301_Spend_Transactions.Services.Interfaces;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -20,14 +21,17 @@ namespace CS301_Spend_Transactions.Service.HostedServices
         private readonly ISQSService _sqsService;
         private readonly ITransactionService _transactionService;
         private readonly IMerchantService _merchantService;
+        private IFailedTransactionErrorHelper _failedTransactionErrorHelper;
 
         public TimedHostedService(ILogger<TimedHostedService> logger, ISQSService sqsService,
-            ITransactionService transactionService, IMerchantService merchantService)
+            ITransactionService transactionService, IMerchantService merchantService,
+            IFailedTransactionErrorHelper failedTransactionErrorHelper)
         {
             _logger = logger;
             _sqsService = sqsService;
             _transactionService = transactionService;
             _merchantService = merchantService;
+            _failedTransactionErrorHelper = failedTransactionErrorHelper;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
