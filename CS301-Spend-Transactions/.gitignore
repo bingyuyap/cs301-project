@@ -40,3 +40,4 @@ launchSettings.json
 
 # csv files with sensitive data
 Repo/Helpers/Seeds/users.csv
+Repo/Helpers/Seeds/users1.csv
