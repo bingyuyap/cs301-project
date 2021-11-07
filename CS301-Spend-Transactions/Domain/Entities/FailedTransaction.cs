@@ -24,6 +24,6 @@ namespace CS301_Spend_Transactions.Models
         
         public string Card_Type { get; set; }
         
-        public int count { get; set; }
+        public int Count { get; set; }
     }
 }
