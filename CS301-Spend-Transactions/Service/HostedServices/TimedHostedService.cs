@@ -21,17 +21,14 @@ namespace CS301_Spend_Transactions.Service.HostedServices
         private readonly ISQSService _sqsService;
         private readonly ITransactionService _transactionService;
         private readonly IMerchantService _merchantService;
-        private IFailedTransactionErrorHelper _failedTransactionErrorHelper;
 
         public TimedHostedService(ILogger<TimedHostedService> logger, ISQSService sqsService,
-            ITransactionService transactionService, IMerchantService merchantService,
-            IFailedTransactionErrorHelper failedTransactionErrorHelper)
+            ITransactionService transactionService, IMerchantService merchantService)
         {
             _logger = logger;
             _sqsService = sqsService;
             _transactionService = transactionService;
             _merchantService = merchantService;
-            _failedTransactionErrorHelper = failedTransactionErrorHelper;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -49,7 +46,7 @@ namespace CS301_Spend_Transactions.Service.HostedServices
                     "[TimedHostedService/DoWork] Starting an iteration");
                 
                 var sw = Stopwatch.StartNew();
-                var checkpoint1 = sw.ElapsedMilliseconds;
+                int txn_count = 0;
 
                 Parallel.For(1, 101, i =>
                 {
@@ -66,6 +63,7 @@ namespace CS301_Spend_Transactions.Service.HostedServices
 
                     foreach (var dto in dtos)
                     {
+                        txn_count++;
                         try
                         {
                             _logger.LogInformation(dto.ToString());
@@ -78,12 +76,11 @@ namespace CS301_Spend_Transactions.Service.HostedServices
                         {
                             _logger.LogCritical(
                                 $"[TimedHostedService/DoWork] Transaction {dto.Transaction_Id} failed due to {e.Message}");
-                            
-                            _failedTransactionErrorHelper.HandleFailedTransaction(dto);
                         }
                     }
                 });
-                _logger.LogInformation($"Time taken from consuming to indexing {sw.ElapsedMilliseconds}");
+                _logger
+                    .LogInformation($"[PERF] Time taken to ingest {txn_count} transactions: {sw.ElapsedMilliseconds}");
             }
             // not delaying for now as we want to maximize performance
             // await Task.Delay(1, stoppingToken);
