@@ -7,6 +7,7 @@ using CS301_Spend_Transactions.Domain.DTO;
 using CS301_Spend_Transactions.Domain.Exceptions;
 using CS301_Spend_Transactions.Models;
 using CS301_Spend_Transactions.Repo.Helpers;
+using CS301_Spend_Transactions.Repo.Helpers.Interfaces;
 using CS301_Spend_Transactions.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -22,12 +23,17 @@ namespace CS301_Spend_Transactions.Services
 
         // Manages the lifetime of the services we going to inject
         private readonly IServiceScopeFactory _scopeFactory;
+        
+        private IFailedTransactionErrorHelper _failedTransactionErrorHelper;
+
 
         public TransactionService(IServiceScopeFactory scopeFactory,
-            ILogger<TransactionService> logger)
+            ILogger<TransactionService> logger,
+            IFailedTransactionErrorHelper failedTransactionErrorHelper)
         {
             _scopeFactory = scopeFactory;
             _logger = logger;
+            _failedTransactionErrorHelper = failedTransactionErrorHelper;
         }
 
         /**
@@ -44,18 +50,21 @@ namespace CS301_Spend_Transactions.Services
             if (transaction.Amount < 0)
             {
                 _logger.LogCritical("Amount is negative");
+                _failedTransactionErrorHelper.HandleFailedTransaction(transactionDto);
                 throw new InvalidTransactionException("Transaction cannot have a negative amount");
             }
 
             if (dbContext.Cards.Find(transaction.CardId) is null)
             {
                 _logger.LogCritical("Card not found");
+                _failedTransactionErrorHelper.HandleFailedTransaction(transactionDto);
                 throw new InvalidTransactionException("Invalid card ID in transaction record");
             }
 
             if (dbContext.Transactions.Find(transaction.Id) != null)
             {
                 _logger.LogCritical("Transaction exists within the database");
+                _failedTransactionErrorHelper.HandleFailedTransaction(transactionDto);
                 throw new InvalidTransactionException("Transaction has already been processed");
             }
 
