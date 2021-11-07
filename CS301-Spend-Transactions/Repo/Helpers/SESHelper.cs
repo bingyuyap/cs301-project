@@ -23,7 +23,7 @@ namespace CS301_Spend_Transactions.Repo.Helpers
         static string receiverAddress;
 
         // The subject line for the email.
-        static readonly string subject = "[Warning] Invalid transactions";
+        static readonly string subject = "[Warning] Invalid transactions on Transactions service";
 
         // The email body for recipients with non-HTML email clients.
         static readonly string textBody = "Invalid transaction(s), please check failed_transaction database";
