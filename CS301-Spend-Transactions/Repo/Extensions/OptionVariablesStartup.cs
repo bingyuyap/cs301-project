@@ -13,8 +13,9 @@ namespace CS301_Spend_Transactions.Extensions
             IConfiguration configuration)
         {
             var sqsConfig =  GetSqsOption(configuration, env);
+            var sesConfig =  GetSesOption(configuration, env);
             
-            if (sqsConfig == null)
+            if (sqsConfig == null || sesConfig == null)
                 throw new InvalidDataException("Invalid sqsConfig object received.");
             
             services.Configure<SQSOption>(options =>
@@ -38,6 +39,18 @@ namespace CS301_Spend_Transactions.Extensions
                 return null;
 
             return new SQSOption(queueUrl, region, accessKey, secretKey);
+        }
+        
+        private static SESOption GetSesOption(IConfiguration configuration, IWebHostEnvironment env)
+        {
+            var accessKey = Environment.GetEnvironmentVariable("AccessKey");
+            var secretKey = Environment.GetEnvironmentVariable("SecretKey");
+
+            if (string.IsNullOrEmpty(accessKey) ||
+                string.IsNullOrEmpty(secretKey)) 
+                return null;
+
+            return new SESOption(accessKey, secretKey);
         }
     }
 }
