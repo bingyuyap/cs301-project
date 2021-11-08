@@ -97,4 +97,4 @@ You can use ```/api/Database/InitialSeed``` endpoint to do the initial seeding. 
 ### Upload to ECR
 On any successful push or merge request to the main branch, a github action will be triggered, which automatically builds an updated container image and pushes it to ECR. Some secret variables must first be specified in **Settings** -> **Secrets**
 
-
+Testing CI workflow
