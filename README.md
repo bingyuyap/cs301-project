@@ -94,5 +94,7 @@ You can use ```/api/Database/InitialSeed``` endpoint to do the initial seeding. 
 **Docker**: After running `docker build` from the root directory, you can run a container of the docker image, specifying individual environment variables with the `-e` flag or in an file with`--env-file`
 
 
+### Upload to ECR
+On any successful push or merge request to the main branch, a github action will be triggered, which automatically builds an updated container image and pushes it to ECR. Some secret variables must first be specified in **Settings** -> **Secrets**
 
 
